@@ -87,11 +87,11 @@ This section describes the main components, their relationships, and how they fi
 
 - Considerations:
 
-    - IBM Granite, an open-source model with traceable training data, is under consideration for deployment.
+    - [IBM Granite](https://huggingface.co/ibm-granite), an open-source model with traceable training data, is under consideration for deployment.
 
 ## 7. Model Selection & Development
 
-- LLMs: IBM Granite or similar open-source models.
+- LLMs: [IBM Granite](https://huggingface.co/ibm-granite) or similar open-source models.
 
 - Unknowns:
 
