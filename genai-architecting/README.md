@@ -92,7 +92,8 @@ This section describes the main components, their relationships, and how they fi
 ## 7. Model Selection & Development
 
 - LLMs: [IBM Granite](https://huggingface.co/ibm-granite) or similar open-source models. Have to explore [the performance of different LLMs](https://www.scb10x.com/blog/typhoon-innovative-thai-language-model) that could perform better with Thai language:
-    - Typhoon-7B
+    - [Typhoon-7B](https://huggingface.co/scb10x/typhoon-7b) (https://opentyphoon.ai/)
+    - Deepseek
     - SeaLLM-7B
     - OpenThaiGPT-beta-7B
     - WangChanGLM
