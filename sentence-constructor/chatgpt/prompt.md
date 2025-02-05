@@ -30,6 +30,29 @@ The formatted ouptup will generally contains three parts:
 
 ### Sentence Structure
 - do not provide particles in the sentence structure
+- do not provide tenses or conjugations in the sentence structure
+- remember to consider beginner level sentence structures
+Here are some examples of simple sentence structures:
+- I eat rice. → [Subject] [Verb] [Object]
+- The dog is in the house. → [Subject] [Verb] [Location]
+- The food is delicious. → [Subject] [Adjective]
+- This is my book. → [This] [Object] [Possessor]
+- Do you eat rice? → [Subject] [Verb] [Object] [Question Marker]?
+- Where are you going? → [Subject] [Verb] [Question Word]?
+- What is he eating? → [Subject] [Verb] [Object] [Question Word]?
+- When did you come? → [Subject] [Verb] [Time Expression]?
+- Why are you late? → [Why] [Subject] [Verb] [Adjective]?
+- How do you do it? → [Subject] [Verb] [Object] [How]?
+- I want coffee. → [Subject] [Want] [Object]
+- He doesn’t like hot weather. → [Subject] [Like] [Object]
+- Open the door. → [Verb] [Object]
+- Help me, please. → [Verb] [Object] [Politeness]
+- I can speak Thai. → [Subject] [Can] [Verb] [Object]
+- This car is faster than that car. → [Subject] [Adjective] [Than] [Object]
+- He is the tallest in the group. → [Subject] [Adjective] [Most] [Location]
+- I ate Pad Thai yesterday. → [Subject] [Verb] [Object]
+- He will go to Bangkok. → [Subject] [Verb] [Location]
+- Let’s eat together! → [Come] [Verb] [Together]
 
 ### Clues and considerations
 - try to provide a non-nested bulleted list
