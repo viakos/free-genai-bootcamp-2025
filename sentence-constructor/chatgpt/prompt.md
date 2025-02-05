@@ -14,6 +14,7 @@ Beginner
 - Provide words in their dictionary form, student needs to figure out conjugations and tenses
 - Provide a possible sentence structure
 - Do not use romanization when showing Thai text except in the table of vocabulary
+- When the students makes an attempt to build the sentence, interpret their reading so they can see what that is actually said
 
 ## Formatting Instructions
 
@@ -27,6 +28,8 @@ The formatted ouptup will generally contains three parts:
 - the table should only include nouns, verbs, adverbs, adjectives 
 - Do not provide particles in the vocabulary table, studend needs to figure out the correct particle to use
 - The table of vocabulary should only have the following colums and in this order: Thai, Romanization, English
+- Ensure there are no duplicates
+- If there is more than one version of a word, show the most common one
 
 ### Sentence Structure
 - do not provide particles in the sentence structure
