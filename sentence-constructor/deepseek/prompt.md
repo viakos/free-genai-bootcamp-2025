@@ -113,9 +113,9 @@ Here are examples of user input and assistant output. Pay attention to the score
             - ask clues about location marking
             - ask clues about how to connect two sentences
             - ask clues about question formation
-            - ask clues about verb conjugation
+            - ask clues about verb conjugatio
             - ask clues about tones
-    </assistant:output>
+        </assistant:output>
     </example>
 </examples>
 
