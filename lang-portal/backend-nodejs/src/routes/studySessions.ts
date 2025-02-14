@@ -72,22 +72,11 @@ export async function studySessionRoutes(fastify: FastifyInstance) {
             type: 'object',
             properties: {
               id: { type: 'number' },
-              startTime: { type: 'string' },
-              endTime: { type: ['string', 'null'] },
-              activity: {
-                type: 'object',
-                properties: {
-                  id: { type: 'number' },
-                  name: { type: 'string' },
-                },
-              },
-              group: {
-                type: 'object',
-                properties: {
-                  id: { type: 'number' },
-                  name: { type: 'string' },
-                },
-              },
+              activity_name: { type: 'string' },  // ✅ Matches response structure
+              group_name: { type: 'string' },     // ✅ Matches response structure
+              start_time: { type: 'string' },     // ✅ Matches response structure
+              end_time: { type: ['string', 'null'] }, // ✅ Matches response structure
+              review_items_count: { type: 'number' },
             },
           },
           404: {

@@ -73,19 +73,20 @@ export class StudySessionController {
   
 
   getStudySession = async (
-    request: FastifyRequest<{
-      Params: StudySessionParamsSchema;
-    }, ZodTypeProvider>,
-    reply: FastifyReply,
+    request: FastifyRequest<{ Params: StudySessionParamsSchema }, ZodTypeProvider>,
+    reply: FastifyReply
   ) => {
     try {
       const id = Number(request.params.id);
       const session = await this.studySessionService.findById(id);
-      return reply.send(session);
+  
+      console.log("SESSSSSSSION:", session); // ✅ Debugging log
+      return reply.status(200).send(session); // ✅ This actually sends the response!
+      
     } catch (error) {
       if (error instanceof Error && error.message === 'Study session not found') {
         return reply.status(404).send({ error: 'Study session not found' });
-      }
+      } 
       throw error;
     }
   };

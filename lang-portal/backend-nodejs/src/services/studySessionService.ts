@@ -57,29 +57,57 @@ export class StudySessionService {
     };
 }
 
+async findById(id: number) {
+  const session = await this.prisma.studySession.findUnique({
+    where: { id },
+    include: {
+      studyActivity: { select: { name: true } }, // ✅ Selects activity name
+      group: { select: { name: true } },         // ✅ Selects group name
+      studyResults: { select: { id: true } },    // ✅ Counts study results
+    },
+  });
 
-
-  async findById(id: number) {
-    const session = await this.prisma.studySession.findUnique({
-      where: { id },
-      include: {
-        studyActivity: true,
-        group: true,
-        studyResults: {
-          include: {
-            word: true as const,
-          },
-          orderBy: { createdAt: 'asc' },
-        },
-      },
-    });
-
-    if (!session) {
-      throw new Error('Study session not found');
-    }
-
-    return session;
+  if (!session) {
+    throw new Error('Study session not found');
   }
+
+  console.log("SESSION DATA:", session); // ✅ Debugging log to check fetched data
+
+  return {
+    id: session.id,
+    activity_name: session.studyActivity?.name || "Unknown Activity",
+    group_name: session.group?.name || "Unknown Group",
+    start_time: session.startTime ? session.startTime.toISOString() : null,
+    end_time: session.endTime ? session.endTime.toISOString() : null,
+    review_items_count: session.studyResults.length || 0, // ✅ Fix count return
+  };
+}
+
+
+
+
+  // async findById(id: number) {
+  //   const session = await this.prisma.studySession.findUnique({
+  //     where: { id },
+  //     include: {
+  //       studyActivity: true,
+  //       group: true,
+  //       studyResults: {
+  //         include: {
+  //           word: true as const,
+  //         },
+  //         orderBy: { createdAt: 'asc' },
+  //       },
+  //     },
+  //   });
+  //   console.log("SESSION:", JSON.stringify(session, null, 2));
+
+  //   if (!session) {
+  //     throw new Error('Study session not found');
+  //   }
+
+  //   return session;
+  // }
 
   async create(data: StudySessionSchema) {
     return this.prisma.studySession.create({
