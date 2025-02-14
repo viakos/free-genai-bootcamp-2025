@@ -92,10 +92,10 @@ export async function studySessionRoutes(fastify: FastifyInstance) {
   );
 
   server.get(
-    "/api/study_sessions/:id/words",
+    "/api/v1/study-sessions/:id/words",
     {
       schema: {
-        params: {
+        params: { 
           type: "object",
           properties: {
             id: { type: "number" },

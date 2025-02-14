@@ -17,12 +17,18 @@ export class StudySessionController {
     }>,
     reply: FastifyReply
   ) {
-    try {
+    // try {
       const sessionId = request.params.id;
   
       // Fetch words associated with the study session
-      const words = await this.studySessionService.getSessionWords(sessionId);
-  
+      console.log("MY SESSION ID:", sessionId);
+          // 🔥 Check if `studySessionService` is correctly initialized
+      if (!this.studySessionService) {
+        console.error("❌ `studySessionService` is undefined!");
+        return reply.status(500).send({ error: "Internal Server Error: studySessionService is undefined" });
+      }
+      const words = await this.studySessionService.getStudySessionWords(sessionId);
+      console.log("Fetched Words:", JSON.stringify(words, null, 2)); 
       if (!words) {
         return reply.status(404).send({ error: "Study session not found" });
       }
@@ -36,9 +42,9 @@ export class StudySessionController {
       };
   
       return reply.send({ items: words, pagination });
-    } catch (error) {
-      return reply.status(500).send({ error: "Internal Server Error" });
-    }
+    // } catch (error) {
+    //   return reply.status(500).send({ error: "Internal Server Error" });
+    // }
   }
   
 

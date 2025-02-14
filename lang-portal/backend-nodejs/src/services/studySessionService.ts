@@ -84,31 +84,6 @@ async findById(id: number) {
 }
 
 
-
-
-  // async findById(id: number) {
-  //   const session = await this.prisma.studySession.findUnique({
-  //     where: { id },
-  //     include: {
-  //       studyActivity: true,
-  //       group: true,
-  //       studyResults: {
-  //         include: {
-  //           word: true as const,
-  //         },
-  //         orderBy: { createdAt: 'asc' },
-  //       },
-  //     },
-  //   });
-  //   console.log("SESSION:", JSON.stringify(session, null, 2));
-
-  //   if (!session) {
-  //     throw new Error('Study session not found');
-  //   }
-
-  //   return session;
-  // }
-
   async create(data: StudySessionSchema) {
     return this.prisma.studySession.create({
       data,
@@ -171,7 +146,8 @@ async findById(id: number) {
     };
   }
 
-  async getSessionWords(sessionId: number) {
+  async getStudySessionWords(sessionId: number) {
+    console.log("SESSION ID in service:", sessionId);
     return this.prisma.wordReview.findMany({
       where: { studySessionId: sessionId },
       select: { 
