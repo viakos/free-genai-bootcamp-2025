@@ -78,7 +78,7 @@ export async function studyActivityRoutes(fastify: FastifyInstance) {
               id: { type: 'number' },
               name: { type: 'string' },
               description: { type: 'string' },
-              thumbnailUrl: { type: ['string', 'null'] },
+              previewUrl: { type: ['string', 'null'] },
             },
           },
           404: {

@@ -49,6 +49,7 @@ model StudyActivity {
   name        String   @unique
   url         String   // ✅ Matches DB specs
   previewUrl  String?  // ✅ Matches DB specs
+  description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   sessions    StudySession[]
@@ -61,6 +62,8 @@ model StudySession {
   groupId         Int
   studyActivity   StudyActivity @relation(fields: [studyActivityId], references: [id])
   studyActivityId Int
+  startTime       DateTime?
+  endTime         DateTime?
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   studyResults    StudyResult[]

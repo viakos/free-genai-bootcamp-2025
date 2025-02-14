@@ -7,9 +7,12 @@ export class StudySessionService {
   
 
   async findAll(page: number, limit: number, activityId?: number, groupId?: number) {
-    const skip = (page - 1) * limit;
+    const pageNum = Math.max(1, Number(page) || 1);
+    const limitNum = Math.max(1, Number(limit) || 10);
+    const skip = (pageNum - 1) * limitNum;
+
     const where = {
-      ...(activityId && { activityId }),
+      ...(activityId && { studyActivityId: activityId }), // ✅ Ensure the correct column name
       ...(groupId && { groupId }),
     };
 
@@ -17,37 +20,50 @@ export class StudySessionService {
       this.prisma.studySession.findMany({
         where,
         skip,
-        take: limit,
+        take: limitNum,
         include: {
-          activity: true as const,
-          group: true as const,
+          studyActivity: { select: { name: true } },
+          group: { select: { name: true } },
           _count: {
-            select: {
-              studyResults: true as const,
-            },
-          },
+            select: { studyResults: true }
+          }
         },
-        orderBy: { startTime: 'desc' },
+        orderBy: { startTime: 'desc' }
       }),
-      this.prisma.studySession.count({ where }),
+      this.prisma.studySession.count({ where })
     ]);
 
+    console.log("Fetched Sessions:", JSON.stringify(sessions, null, 2)); // ✅ Debugging log
+
+    const items = sessions.map(session => ({
+      id: session.id,
+      activity_name: session.studyActivity?.name || "Unknown Activity",
+      group_name: session.group?.name || "Unknown Group",
+      start_time: session.startTime.toISOString(),
+      end_time: session.endTime ? session.endTime.toISOString() : null,
+      review_items_count: session._count.studyResults || 0,
+    }));
+
+    console.log("Response Items:", JSON.stringify(items, null, 2)); // ✅ Log response
+
     return {
-      sessions,
+      sessions: sessions ?? [], // ✅ Ensure `items` is in the response
       pagination: {
-        current_page: page,
-        total_pages: Math.ceil(total / limit),
+        current_page: pageNum,
+        total_pages: Math.ceil(total / limitNum),
         total_items: total,
-        items_per_page: limit,
+        items_per_page: limitNum,
       },
     };
-  }
+}
+
+
 
   async findById(id: number) {
     const session = await this.prisma.studySession.findUnique({
       where: { id },
       include: {
-        activity: true,
+        studyActivity: true,
         group: true,
         studyResults: {
           include: {
@@ -69,7 +85,7 @@ export class StudySessionService {
     return this.prisma.studySession.create({
       data,
       include: {
-        activity: true,
+        studyActivity: true,
         group: true,
       },
     });
@@ -154,7 +170,7 @@ export class StudySessionService {
     return this.prisma.studySession.findFirst({
       orderBy: { startTime: 'desc' },
       include: {
-        activity: true,
+        studyActivity: true,
         group: true,
       },
     });

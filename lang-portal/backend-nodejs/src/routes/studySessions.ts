@@ -29,34 +29,17 @@ export async function studySessionRoutes(fastify: FastifyInstance) {
           200: {
             type: 'object',
             properties: {
-              sessions: {
+              items: {  // ✅ Change from "sessions" to "items"
                 type: 'array',
                 items: {
                   type: 'object',
                   properties: {
                     id: { type: 'number' },
-                    startTime: { type: 'string' },
-                    endTime: { type: ['string', 'null'] },
-                    activity: {
-                      type: 'object',
-                      properties: {
-                        id: { type: 'number' },
-                        name: { type: 'string' },
-                      },
-                    },
-                    group: {
-                      type: 'object',
-                      properties: {
-                        id: { type: 'number' },
-                        name: { type: 'string' },
-                      },
-                    },
-                    _count: {
-                      type: 'object',
-                      properties: {
-                        reviews: { type: 'number' },
-                      },
-                    },
+                    activity_name: { type: 'string' },
+                    group_name: { type: 'string' },
+                    start_time: { type: 'string' },
+                    end_time: { type: ['string', 'null'] },
+                    review_items_count: { type: 'number' },
                   },
                 },
               },
@@ -103,12 +86,6 @@ export async function studySessionRoutes(fastify: FastifyInstance) {
                 properties: {
                   id: { type: 'number' },
                   name: { type: 'string' },
-                },
-              },
-              _count: {
-                type: 'object',
-                properties: {
-                  reviews: { type: 'number' },
                 },
               },
             },

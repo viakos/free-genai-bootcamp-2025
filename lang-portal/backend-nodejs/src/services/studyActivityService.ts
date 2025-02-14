@@ -38,11 +38,11 @@ export class StudyActivityService {
 
   async findById(id: number) {
     const activity = await this.prisma.studyActivity.findUnique({
-      where: { id },
+      where: { id: Number(id) },
       include: {
         sessions: {
           take: 5,
-          orderBy: { startTime: 'desc' },
+          orderBy: { createdAt: 'desc' },
           include: {
             group: true as const,
           },

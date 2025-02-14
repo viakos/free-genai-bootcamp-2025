@@ -21,11 +21,13 @@ async function createInitialActivities() {
       name: 'Vocabulary Quiz',
       previewUrl: 'https://example.com/vocab-quiz.jpg',
       url: '/activities/vocabulary-quiz', // Added url field
+      description: 'A quiz to test your vocabulary knowledge',
     },
     {
       name: 'Typing Practice',
       previewUrl: 'https://example.com/typing.jpg',
-      url: '/activities/typing-practice', // Added url field
+      url: '/activities/typing-practice',
+      description: 'A typing practice to test your vocabulary knowledge', // Added url field
     },
   ];
 
@@ -122,6 +124,47 @@ async function importWords() {
   }
 }
 
+async function createStudySessions() {
+  console.log('Creating study sessions...');
+
+  // Fetch a group and activity to associate with the session
+  const group = await prisma.group.findFirst();
+  const activity = await prisma.studyActivity.findFirst();
+
+  if (!group || !activity) {
+    throw new Error('Missing required group or activity for study sessions');
+  }
+
+  // Generate startTime as current time and endTime as 5 minutes later
+  const now = new Date();
+  const end = new Date(now.getTime() + 5 * 60 * 1000); // +5 minutes
+
+  // Create two study sessions with startTime and endTime
+  await prisma.studySession.createMany({
+    data: [
+      {
+        groupId: group.id,
+        studyActivityId: activity.id,
+        startTime: now.toISOString(),
+        endTime: end.toISOString(),
+        createdAt: now.toISOString(),
+        updatedAt: now.toISOString(),
+      },
+      {
+        groupId: group.id,
+        studyActivityId: activity.id,
+        startTime: now.toISOString(),
+        endTime: end.toISOString(),
+        createdAt: now.toISOString(),
+        updatedAt: now.toISOString(),
+      },
+    ],
+  });
+
+  console.log('Study sessions created successfully!');
+}
+
+
 async function main() {
   console.log('Starting seed...');
   
@@ -129,6 +172,7 @@ async function main() {
     await createInitialActivities();
     await createDefaultGroups();
     await importWords();
+    await createStudySessions();
     
     console.log('Seed completed successfully!');
   } catch (error) {
