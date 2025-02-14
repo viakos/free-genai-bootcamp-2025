@@ -52,20 +52,9 @@ export class StudySessionController {
   
     // Fetch sessions
     const result = await this.studySessionService.findAll(page, limit, activityId, groupId);
-  
-    console.log("API Raw Response:", JSON.stringify(result, null, 2)); // ✅ Log full response
-  
-    if (!result.items || !Array.isArray(result.items)) {
-      console.log("❌ No items found, returning empty array!");
-      //return reply.send({ items: [], pagination: result.pagination });
-    }
-
-    console.log("***** result.sessions", result.sessions)
-  
+    
     // Log the mapped transformation before sending
     const mappedItems = result.sessions.map((session) => {
-      console.log("Processing Session:", JSON.stringify(session, null, 2)); // ✅ Debugging log
-
       return {
         id: session.id,
         activity_name: session.studyActivity?.name ?? "Unknown Activity",
@@ -75,10 +64,7 @@ export class StudySessionController {
       };
     });
   
-    console.log("Final API Response before sending:", JSON.stringify({
-      items: mappedItems,
-      pagination: result.pagination,
-    }, null, 2));
+    
   
     return reply.send({
       items: mappedItems,
