@@ -62,8 +62,7 @@ export class StudySessionController {
         start_time: session.startTime.toISOString(),
         end_time: session.endTime ? session.endTime.toISOString() : null
       };
-    });
-  
+    }); 
     
   
     return reply.send({
@@ -80,7 +79,7 @@ export class StudySessionController {
     reply: FastifyReply,
   ) => {
     try {
-      const { id } = request.params;
+      const id = Number(request.params.id);
       const session = await this.studySessionService.findById(id);
       return reply.send(session);
     } catch (error) {
