@@ -146,28 +146,71 @@ async findById(id: number) {
     };
   }
 
-  async getStudySessionWords(sessionId: number) {
-    console.log("SESSION ID in service:", sessionId);
-    return this.prisma.wordReview.findMany({
-      where: { studySessionId: sessionId },
-      select: { 
-        word: {
-          select: {
-            thai: true,
-            romanized: true,
-            english: true,
-          },
+  async getStudySessionWords(sessionId: number, page: number = 1, limit: number = 10) {
+    const skip = (page - 1) * limit;
+    const limitNum = Math.max(1, Number(limit));
+
+    // First check if session exists
+    const sessionExists = await this.prisma.studySession.findUnique({
+      where: { id: sessionId }
+    });
+
+    if (!sessionExists) {
+      throw new Error('Study session not found');
+    }
+
+    const [reviews, total] = await Promise.all([
+      this.prisma.studyResult.findMany({
+        where: { 
+          studySessionId: sessionId 
         },
-        correct_count: true,
-        wrong_count: true,
-      },
-    }).then(results => results.map(r => ({
-      thai: r.word.thai,
-      romanized: r.word.romanized,
-      english: r.word.english,
-      correct_count: r.correct_count,
-      wrong_count: r.wrong_count,
-    })));
+        skip,
+        take: limitNum,
+        select: {
+          correct: true,
+          word: {
+            select: {
+              thai: true,
+              romanized: true,
+              english: true,
+            }
+          }
+        }
+      }),
+      this.prisma.studyResult.count({
+        where: { studySessionId: sessionId }
+      })
+    ]);
+
+    // Group results by word and count correct/wrong answers
+    const wordStats = reviews.reduce((acc, review) => {
+      const key = review.word.thai;
+      if (!acc[key]) {
+        acc[key] = {
+          thai: review.word.thai,
+          romanized: review.word.romanized,
+          english: review.word.english,
+          correct_count: 0,
+          wrong_count: 0
+        };
+      }
+      if (review.correct) {
+        acc[key].correct_count++;
+      } else {
+        acc[key].wrong_count++;
+      }
+      return acc;
+    }, {} as Record<string, any>);
+
+    return {
+      items: Object.values(wordStats),
+      pagination: {
+        current_page: page,
+        total_pages: Math.ceil(total / limitNum),
+        total_items: total,
+        items_per_page: limitNum
+      }
+    };
   }  
 
   async getLastSession() {
@@ -189,57 +232,50 @@ async findById(id: number) {
    * @returns The created word review record
    */
   async addReview(sessionId: number, wordId: number, isCorrect: boolean) {
-    // First check if session exists and is not ended
+    console.log("🟢 Attempting to add review:", { sessionId, wordId, isCorrect });
+  
+    // Fetch the session to check if it's ended
     const session = await this.prisma.studySession.findUnique({
       where: { id: sessionId },
-      select: { endTime: true }
+      select: { endTime: true } // ✅ Only fetch endTime
     });
-
+  
     if (!session) {
-      throw new Error('Study session not found');
+      console.error("❌ ERROR: Study session not found!");
+      throw new Error("Study session not found");
     }
-
+  
     if (session.endTime) {
-      throw new Error('Cannot add review to ended session');
+      console.error("❌ ERROR: Cannot add review to ended session!");
+      throw new Error("Cannot add review to ended session");
     }
-
-    // Create or update the word review
+  
+    // ✅ Proceed with review creation
     const review = await this.prisma.wordReview.upsert({
       where: {
-        studySessionId_wordId: {
-          studySessionId: sessionId,
+        wordId_studySessionId: {
           wordId: wordId,
+          studySessionId: sessionId,
         },
       },
       update: {
-        ...(isCorrect 
-          ? { correct_count: { increment: 1 }} 
-          : { wrong_count: { increment: 1 }}),
+        ...(isCorrect ? { correctCount: { increment: 1 } } : { wrongCount: { increment: 1 } }),
       },
       create: {
         studySessionId: sessionId,
         wordId: wordId,
-        correct_count: isCorrect ? 1 : 0,
-        wrong_count: isCorrect ? 0 : 1,
+        correctCount: isCorrect ? 1 : 0,
+        wrongCount: isCorrect ? 0 : 1,
       },
     });
-
-    // Also update the word's global stats
-    await this.prisma.word.update({
-      where: { id: wordId },
-      data: {
-        ...(isCorrect
-          ? { correctCount: { increment: 1 }}
-          : { wrongCount: { increment: 1 }}),
-      },
-    });
-
+  
     return {
       success: true,
       word_id: wordId,
       study_session_id: sessionId,
       correct: isCorrect,
-      created_at: new Date(),
+      created_at: new Date().toISOString(),
     };
   }
+  
 }

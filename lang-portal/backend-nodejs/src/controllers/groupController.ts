@@ -126,4 +126,30 @@ export class GroupController {
       throw error;
     }
   };
+
+  getGroupWords = async (
+    request: FastifyRequest<{
+      Params: GroupParamsSchema;
+      Querystring: { page?: number; limit?: number };
+    }, ZodTypeProvider>,
+    reply: FastifyReply,
+  ) => {
+    const id = Number(request.params.id);
+    const { page = 1, limit = 10 } = request.query;
+    const words = await this.groupService.findGroupWords(id, page, limit);
+    return reply.send(words);
+  };
+
+  getGroupStudySessions = async (
+    request: FastifyRequest<{
+      Params: GroupParamsSchema;
+      Querystring: { page?: number; limit?: number };
+    }, ZodTypeProvider>,
+    reply: FastifyReply,
+  ) => {
+    const id = Number(request.params.id);
+    const { page = 1, limit = 10 } = request.query;
+    const sessions = await this.groupService.findGroupStudySessions(id, page, limit);
+    return reply.send(sessions);
+  };
 }

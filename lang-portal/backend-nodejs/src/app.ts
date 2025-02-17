@@ -9,6 +9,7 @@ import { groupRoutes } from './routes/groups.js';
 import { studyActivityRoutes } from './routes/studyActivities.js';
 import { studySessionRoutes } from './routes/studySessions.js';
 import { dashboardRoutes } from './routes/dashboard.js';
+import { adminRoutes } from './routes/admin.js';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -47,6 +48,7 @@ export async function buildApp() {
   await app.register(studyActivityRoutes);
   await app.register(studySessionRoutes);
   await app.register(dashboardRoutes);
+  await app.register(adminRoutes);
 
   return app;
 }

@@ -253,7 +253,7 @@ example response:
    }
 }
 ```
-- GET /api/v1/groups/:id/study_sessions
+- GET /api/v1/groups/:id/study-sessions
 ```json
 {
     "items": [
@@ -274,7 +274,7 @@ example response:
 }
 ```
 
-- GET /api/v1/study_sessions
+- GET /api/v1/study-sessions
 ```json
 {
     "items": [
@@ -295,7 +295,7 @@ example response:
 }
 ```
 
-- /api/v1/study_sessions/:id
+- /api/v1/study-sessions/:id
 ```json
 {
   "id": 12,
@@ -347,7 +347,7 @@ response:
 }
 ```
 
-- POST /api/v1/reset_history
+- POST /api/v1/reset-history
 ```json
 {
     "success": true,
@@ -355,7 +355,7 @@ response:
 }
 ```
 
-- POST /api/v1/full_reset
+- POST /api/v1/full-reset
 ```json
 {
     "success": true,

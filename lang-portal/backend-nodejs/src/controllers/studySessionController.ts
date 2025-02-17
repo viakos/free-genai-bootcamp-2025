@@ -11,41 +11,27 @@ import {
 export class StudySessionController {
   constructor(private studySessionService: StudySessionService) {}
 
-  async getStudySessionWords(
+  getStudySessionWords = async (
     request: FastifyRequest<{
       Params: { id: number };
-    }>,
+      Querystring: { page?: number; limit?: number };
+    }, ZodTypeProvider>,
     reply: FastifyReply
-  ) {
-    // try {
+  ) => {
+    try {
       const sessionId = request.params.id;
-  
-      // Fetch words associated with the study session
-      console.log("MY SESSION ID:", sessionId);
-          // 🔥 Check if `studySessionService` is correctly initialized
-      if (!this.studySessionService) {
-        console.error("❌ `studySessionService` is undefined!");
-        return reply.status(500).send({ error: "Internal Server Error: studySessionService is undefined" });
+      const { page = 1, limit = 10 } = request.query;
+      
+      const result = await this.studySessionService.getStudySessionWords(sessionId, page, limit);
+      return reply.send(result);
+    } catch (error) {
+      if (error instanceof Error && error.message === 'Study session not found') {
+        return reply.status(404).send({ error: 'Study session not found' });
       }
-      const words = await this.studySessionService.getStudySessionWords(sessionId);
-      console.log("Fetched Words:", JSON.stringify(words, null, 2)); 
-      if (!words) {
-        return reply.status(404).send({ error: "Study session not found" });
-      }
+      throw error;
+    }
+  };
   
-      // Mocked pagination (adjust based on actual logic)
-      const pagination = {
-        current_page: 1,
-        total_pages: 1,
-        total_items: words.length,
-        items_per_page: 100,
-      };
-  
-      return reply.send({ items: words, pagination });
-    // } catch (error) {
-    //   return reply.status(500).send({ error: "Internal Server Error" });
-    // }
-  }
   
 
   getStudySessions = async (
@@ -97,26 +83,42 @@ export class StudySessionController {
     }
   };
 
-  async reviewWord(
+  reviewWord = async (
     request: FastifyRequest<{
       Params: { id: number; word_id: number };
       Body: { correct: boolean };
-    }>,
+    }, ZodTypeProvider>, // ✅ Added ZodTypeProvider for schema validation
     reply: FastifyReply
-  ) {
+  ) => {
     try {
+      console.log("🟢 Received Review Request:", request.params, request.body);
+  
+      // 🔥 Check if `studySessionService` is correctly initialized
+      if (!this.studySessionService) {
+        console.error("❌ ERROR: `studySessionService` is undefined!");
+        return reply.status(500).send({ error: "Internal Server Error: `studySessionService` is undefined" });
+      }
+  
+      // 🔥 Check if `addReview` exists
+      if (typeof this.studySessionService.addReview !== "function") {
+        console.error("❌ ERROR: `addReview` method does not exist in `studySessionService`!");
+        return reply.status(500).send({ error: "Internal Server Error: `addReview` method is missing" });
+      }
+  
       const { id, word_id } = request.params;
       const { correct } = request.body;
-
-      // Validate if the study session and word exist
+  
+      // Call the service method
       const review = await this.studySessionService.addReview(id, word_id, correct);
-
+  
       return reply.status(201).send(review);
     } catch (error) {
+      console.error("❌ ERROR in reviewWord:", error);
       if (error instanceof Error && error.message.includes("not found")) {
         return reply.status(404).send({ error: "Study session or word not found" });
       }
-      throw error;
+      return reply.status(500).send({ error: "Internal Server Error" });
     }
-  }
+  };
+  
 }

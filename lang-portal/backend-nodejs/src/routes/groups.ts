@@ -291,4 +291,87 @@ export async function groupRoutes(fastify: FastifyInstance) {
     },
     groupController.removeWordsFromGroup,
   );
+
+  server.get(
+    '/api/v1/groups/:id/words',
+    {
+      schema: {
+        params: groupParamsJsonSchema,
+        tags: ['groups'],
+        summary: 'Get words in a group',
+        response: {
+          200: {
+            type: 'object',
+            properties: {
+              items: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    id: { type: 'number' },
+                    thai: { type: 'string' },
+                    english: { type: 'string' },
+                    romanized: { type: 'string' },
+                    correct_count: { type: 'number' },
+                    wrong_count: { type: 'number' }
+                  }
+                }
+              },
+              pagination: {
+                type: 'object',
+                properties: {
+                  current_page: { type: 'number' },
+                  total_pages: { type: 'number' },
+                  total_items: { type: 'number' },
+                  items_per_page: { type: 'number' }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    groupController.getGroupWords
+  );
+
+  server.get(
+    '/api/v1/groups/:id/study-sessions',
+    {
+      schema: {
+        params: groupParamsJsonSchema,
+        tags: ['groups'],
+        summary: 'Get study sessions for a group',
+        response: {
+          200: {
+            type: 'object',
+            properties: {
+              items: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    id: { type: 'number' },
+                    activity_name: { type: 'string' },
+                    group_name: { type: 'string' },
+                    start_time: { type: 'string', format: 'date-time' },
+                    end_time: { type: ['string', 'null'], format: 'date-time' }
+                  }
+                }
+              },
+              pagination: {
+                type: 'object',
+                properties: {
+                  current_page: { type: 'number' },
+                  total_pages: { type: 'number' },
+                  total_items: { type: 'number' },
+                  items_per_page: { type: 'number' }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    groupController.getGroupStudySessions
+  );
 }
