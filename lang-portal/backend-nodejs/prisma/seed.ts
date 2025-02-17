@@ -164,6 +164,65 @@ async function createStudySessions() {
   console.log('Study sessions created successfully!');
 }
 
+async function createStudyResults() {
+  console.log('Creating study results...');
+
+  const sessions = await prisma.studySession.findMany();
+  if (sessions.length === 0) {
+    throw new Error('No study sessions found to create results');
+  }
+
+  const words = await prisma.word.findMany({ take: 10 });
+  if (words.length === 0) {
+    throw new Error('No words found to create study results');
+  }
+
+  let count = 0;
+  for (const session of sessions) {
+    for (const word of words) {
+      await prisma.studyResult.create({
+        data: {
+          studySessionId: session.id,
+          wordId: word.id,
+          correct: Math.random() > 0.3, // 70% chance of correct answer
+          createdAt: new Date(),
+        },
+      });
+      count++;
+    }
+  }
+
+  console.log(`✅ Created ${count} study results!`);
+}
+
+async function createWordReviews() {
+  console.log('Creating word reviews...');
+
+  const words = await prisma.word.findMany({ take: 10 }); // Limit to first 10 words
+  if (words.length === 0) {
+    throw new Error('No words found to create word reviews');
+  }
+
+  let count = 0;
+  for (const word of words) {
+    await prisma.wordReview.upsert({
+      where: { wordId: word.id },
+      update: {},
+      create: {
+        wordId: word.id,
+        correctCount: Math.floor(Math.random() * 5), // Random 0-4 correct reviews
+        wrongCount: Math.floor(Math.random() * 3),  // Random 0-2 wrong reviews
+        lastReviewed: new Date(),
+      },
+    });
+    count++;
+  }
+
+  console.log(`✅ Created ${count} word reviews!`);
+}
+
+
+
 
 async function main() {
   console.log('Starting seed...');
@@ -173,6 +232,8 @@ async function main() {
     await createDefaultGroups();
     await importWords();
     await createStudySessions();
+    await createStudyResults(); 
+    await createWordReviews(); // ✅ Add this
     
     console.log('Seed completed successfully!');
   } catch (error) {

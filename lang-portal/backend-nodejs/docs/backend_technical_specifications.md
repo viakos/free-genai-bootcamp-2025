@@ -103,7 +103,7 @@ backend-nodejs/
 }
 ```
 
-- GET /api/v1/dashboard/study_progress
+- GET /api/v1/dashboard/study-progress
 Returns study progress statistics.
 Mastery progress bar will be calculated in the frontend using total words studied and total available words.
 ```json

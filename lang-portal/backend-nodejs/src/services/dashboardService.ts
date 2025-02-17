@@ -6,7 +6,7 @@ export class DashboardService {
   async getStudyProgress() {
     const [totalWords, studiedWords] = await Promise.all([
       this.prisma.word.count(),
-      this.prisma.word.count({
+      this.prisma.wordReview.count({
         where: {
           OR: [
             { correctCount: { gt: 0 } },
@@ -15,20 +15,21 @@ export class DashboardService {
         },
       }),
     ]);
-
+  
     return {
       total_words_studied: studiedWords,
       total_available_words: totalWords,
     };
   }
+  
 
   async getQuickStats() {
     const now = new Date();
     const startOfToday = new Date(now.setHours(0, 0, 0, 0));
     const last30Days = new Date(now.setDate(now.getDate() - 30));
-
+  
     const [studyResults, totalSessions, activeGroups, recentSessions] = await Promise.all([
-      // Get study results for success rate
+      // ✅ Fix: Change `isCorrect` to `correct`
       this.prisma.studyResult.findMany({
         where: {
           createdAt: {
@@ -36,7 +37,7 @@ export class DashboardService {
           },
         },
         select: {
-          isCorrect: true,
+          correct: true,  // ✅ Use `correct`, NOT `isCorrect`
         },
       }),
       // Get total study sessions
@@ -50,28 +51,26 @@ export class DashboardService {
         },
       }),
       // Get recent sessions for streak calculation
-      this.prisma.studySession.groupBy({
-        by: ['startTime'],
+      this.prisma.studySession.findMany({
         where: {
           startTime: {
             gte: last30Days,
           },
         },
-        orderBy: {
-          startTime: 'desc',
-        },
+        select: { startTime: true },
+        orderBy: { startTime: 'desc' },
       }),
     ]);
-
-    // Calculate success rate
+  
+    // ✅ Calculate success rate
     const totalAnswers = studyResults.length;
-    const correctAnswers = studyResults.filter((r) => r.isCorrect).length;
+    const correctAnswers = studyResults.filter((r) => r.correct).length;
     const successRate = totalAnswers > 0 ? (correctAnswers / totalAnswers) * 100 : 0;
-
-    // Calculate study streak
+  
+    // ✅ Calculate study streak
     let streakDays = 0;
     let currentDate = startOfToday;
-    
+  
     for (const session of recentSessions) {
       const sessionDate = new Date(session.startTime);
       if (sessionDate.toDateString() === currentDate.toDateString()) {
@@ -81,7 +80,7 @@ export class DashboardService {
         break;
       }
     }
-
+  
     return {
       success_rate: Math.round(successRate),
       total_study_sessions: totalSessions,
@@ -89,4 +88,5 @@ export class DashboardService {
       study_streak_days: streakDays,
     };
   }
+  
 }
