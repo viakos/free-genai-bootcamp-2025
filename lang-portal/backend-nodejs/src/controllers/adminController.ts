@@ -24,4 +24,24 @@ export class AdminController {
       });
     }
   };
+
+  fullReset = async (
+    _request: FastifyRequest,
+    reply: FastifyReply
+  ) => {
+    try {
+      console.log("Controller - full reset");
+      await this.adminService.fullReset();
+      return reply.send({
+        success: true,
+        message: 'System has been fully reset'
+      });
+    } catch (error) {
+      console.error('Failed to fully reset the system:', error);
+      return reply.status(500).send({
+        success: false,
+        message: 'Failed to fully reset the system'
+      });
+    }
+  };
 } 

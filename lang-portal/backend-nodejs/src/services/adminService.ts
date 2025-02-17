@@ -26,4 +26,19 @@ export class AdminService {
 
     console.log("✅ Study history has been successfully reset.");
   }
+
+  async fullReset() {
+    console.log("Fully resetting the system");
+
+    // Use a transaction to remove all data, including words and groups
+    await this.prisma.$transaction([
+      this.prisma.studyResult.deleteMany({}),
+      this.prisma.wordReview.deleteMany({}),
+      this.prisma.studySession.deleteMany({}),
+      this.prisma.studyActivity.deleteMany({}),
+      this.prisma.wordsInGroups.deleteMany({}),
+      this.prisma.group.deleteMany({}),
+      this.prisma.word.deleteMany({}),
+    ]);
+  }
 }
