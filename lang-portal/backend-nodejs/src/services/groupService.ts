@@ -6,11 +6,12 @@ export class GroupService {
 
   async findAll(page: number, limit: number) {
     const skip = (page - 1) * limit;
+    const limitNum = Math.max(1, Number(limit) || 10);
 
     const [groups, total] = await Promise.all([
       this.prisma.group.findMany({
         skip,
-        take: limit,
+        take: limitNum,
         include: {
           _count: {
             select: {
@@ -37,7 +38,7 @@ export class GroupService {
 
   async findById(id: number) {
     const group = await this.prisma.group.findUnique({
-      where: { id },
+      where: { id: Number(id) },
       include: {
         words: {
           include: {
@@ -48,7 +49,7 @@ export class GroupService {
           take: 5,
           orderBy: { startTime: 'desc' },
           include: {
-            activity: true as const,
+            studyActivity: true as const,
           },
         },
       },

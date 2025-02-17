@@ -145,7 +145,7 @@ export async function studySessionRoutes(fastify: FastifyInstance) {
   );
 
   server.post(
-    "/api/study_sessions/:id/words/:word_id/review",
+    "/api/v1/study-sessions/:id/words/:word_id/review",
     {
       schema: {
         params: {
@@ -186,5 +186,48 @@ export async function studySessionRoutes(fastify: FastifyInstance) {
       }
     },
     studySessionController.reviewWord // ✅ Ensure this function exists!
+  );
+
+  server.get(
+    "/api/v1/dashboard/last_study_session",
+    {
+      schema: {
+        tags: ["dashboard"],
+        summary: "Get the last study session",
+        response: {
+          200: {
+            type: "object",
+            properties: {
+              id: { type: "integer" },
+              group_id: { type: "integer" },
+              created_at: { type: "string", format: "date-time" },
+              study_activity_id: { type: "integer" },
+              group_name: { type: "string" }
+            }
+          },
+          404: {
+            type: "object",
+            properties: {
+              error: { type: "string" }
+            }
+          }
+        }
+      }
+    },
+    async (request, reply) => {
+      const lastSession = await studySessionService.getLastSession();
+      
+      if (!lastSession) {
+        return reply.status(404).send({ error: "No study sessions found" });
+      }
+
+      return {
+        id: lastSession.id,
+        group_id: lastSession.groupId,
+        created_at: lastSession.createdAt.toISOString(),
+        study_activity_id: lastSession.studyActivityId,
+        group_name: lastSession.group?.name || "Unknown Group"
+      };
+    }
   );
 }

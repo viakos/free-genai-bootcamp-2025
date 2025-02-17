@@ -93,53 +93,53 @@ export async function studyActivityRoutes(fastify: FastifyInstance) {
     studyActivityController.getStudyActivity,
   );
 
-  // server.get(
-  //   '/api/v1/study-activities/:id/study-sessions',
-  //   {
-  //     schema: {
-  //       params: studyActivityParamsJsonSchema,
-  //       tags: ['study-activities'],
-  //       summary: 'Get study sessions for a specific activity',
-  //       response: {
-  //         200: {
-  //           type: 'object',
-  //           properties: {
-  //             study_sessions: {
-  //               type: 'array',
-  //               items: {
-  //                 type: 'object',
-  //                 properties: {
-  //                   id: { type: 'number' },
-  //                   activity_name: { type: 'string' },
-  //                   group_name: { type: 'string' },
-  //                   start_time: { type: 'string', format: 'date-time' },
-  //                   end_time: { type: 'string', format: 'date-time', nullable: true },
-  //                   review_items_count: { type: 'number' },
-  //                 },
-  //               },
-  //             },
-  //             pagination: {
-  //               type: 'object',
-  //               properties: {
-  //                 current_page: { type: 'number' },
-  //                 total_pages: { type: 'number' },
-  //                 total_items: { type: 'number' },
-  //                 items_per_page: { type: 'number' },
-  //               },
-  //             },
-  //           },
-  //         },
-  //         404: {
-  //           type: 'object',
-  //           properties: {
-  //             error: { type: 'string' },
-  //           },
-  //         },
-  //       },
-  //     },
-  //   },
-  //   studyActivityController.getStudySessionsForActivity,
-  // );
+  server.get(
+    '/api/v1/study-activities/:id/study-sessions',
+    {
+      schema: {
+        params: studyActivityParamsJsonSchema,
+        tags: ['study-activities'],
+        summary: 'Get study sessions for a specific activity',
+        response: {
+          200: {
+            type: 'object',
+            properties: {
+              study_sessions: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    id: { type: 'number' },
+                    activity_name: { type: 'string' },
+                    group_name: { type: 'string' },
+                    start_time: { type: 'string', format: 'date-time' },
+                    end_time: { type: 'string', format: 'date-time', nullable: true },
+                    review_items_count: { type: 'number' },
+                  },
+                },
+              },
+              pagination: {
+                type: 'object',
+                properties: {
+                  current_page: { type: 'number' },
+                  total_pages: { type: 'number' },
+                  total_items: { type: 'number' },
+                  items_per_page: { type: 'number' },
+                },
+              },
+            },
+          },
+          404: {
+            type: 'object',
+            properties: {
+              error: { type: 'string' },
+            },
+          }
+        },
+      },
+    },
+    studyActivityController.getStudySessionsForActivity,
+  );
   
 
   server.post(

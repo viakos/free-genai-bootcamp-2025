@@ -39,14 +39,16 @@ export class WordService {
 
   async findById(id: number) {
     const word = await this.prisma.word.findUnique({
-      where: { id },
-      include: {
-        groups: {
-          include: {
-            group: true as const,
-          },
-        },
+      where: {
+        id: Number(id)
       },
+      include: {
+        wordGroups: {
+          include: {
+            group: true
+          }
+        }
+      }
     });
 
     if (!word) {

@@ -171,6 +171,7 @@ async findById(id: number) {
   }  
 
   async getLastSession() {
+    console.log("Getting last session");
     return this.prisma.studySession.findFirst({
       orderBy: { startTime: 'desc' },
       include: {

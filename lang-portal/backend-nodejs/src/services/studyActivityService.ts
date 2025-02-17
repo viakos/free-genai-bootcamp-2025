@@ -35,6 +35,21 @@ export class StudyActivityService {
     };
   }
   
+  async getStudySessionsForActivity(activityId: number) {
+    console.log("🔍 Fetching study sessions for activity in Service:", activityId);
+    return this.prisma.studySession.findMany({
+      where: { studyActivityId: activityId },
+      include: {
+        studyActivity: { select: { name: true } },
+        group: { select: { name: true } },
+        _count: {
+          select: { studyResults: true }
+        }
+      },
+      orderBy: { startTime: 'desc' }
+    });
+  }
+  
 
   async findById(id: number) {
     const activity = await this.prisma.studyActivity.findUnique({

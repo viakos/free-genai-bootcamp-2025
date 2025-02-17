@@ -90,7 +90,7 @@ backend-nodejs/
 ### **API Endpoints**
 
 ## Details of endpoints:
-- GET /api/dashboard/last_study_session
+- GET /api/v1/dashboard/last_study_session
   Fetch the last study session
 ```json
 {
@@ -103,7 +103,7 @@ backend-nodejs/
 }
 ```
 
-- GET /api/dashboard/study_progress
+- GET /api/v1/dashboard/study_progress
 Returns study progress statistics.
 Mastery progress bar will be calculated in the frontend using total words studied and total available words.
 ```json
@@ -113,7 +113,7 @@ Mastery progress bar will be calculated in the frontend using total words studie
 }
 ```json
 
-- GET /api/dashboard/quick-stats
+- GET /api/v1/dashboard/quick-stats
 ```json
 {
   "success_rate": 80,
@@ -123,7 +123,7 @@ Mastery progress bar will be calculated in the frontend using total words studie
 }
 ```
 
-- GET /api/study_activities/:id
+- GET /api/v1/study-activities/:id
 ```json
 {
 "id": 1,
@@ -133,7 +133,7 @@ Mastery progress bar will be calculated in the frontend using total words studie
 }
 ```
 
--  GET /api/study_activities/:id/study_sessions
+-  GET /api/v1/study-activities/:id/study_sessions
  Get study sessions for a specific activity 
 ```json
 {
@@ -156,7 +156,7 @@ Mastery progress bar will be calculated in the frontend using total words studie
 }
 ```
 
-- POST /api/study_activities
+- POST /api/v1/study-activities
 ```json
 required params:
 {
@@ -173,7 +173,7 @@ example response:
 }
 ```
 
-- GET /api/words/
+- GET /api/v1/words/
 ```json
 {
     "words": [
@@ -194,7 +194,7 @@ example response:
 }
 ```
 
-- GET /api/words/:id
+- GET /api/v1/words/:id
 ```json
 {
   "thai": "สวัสดี",
@@ -212,7 +212,7 @@ example response:
      ]
 }
 
-- GET /api/groups
+- GET /api/v1/groups
 ```json
 {
   "items": [
@@ -228,7 +228,7 @@ example response:
 }
 ```
 
-- /api/groups/:id
+- /api/v1/groups/:id
 ```json
 {
      "id":1,
@@ -239,7 +239,7 @@ example response:
 }
 ```
 
-- GET /api/groups/:id/words
+- GET /api/v1/groups/:id/words
 ```json
 {
     "items": [
@@ -253,7 +253,7 @@ example response:
    }
 }
 ```
-- GET /api/groups/:id/study_sessions
+- GET /api/v1/groups/:id/study_sessions
 ```json
 {
     "items": [
@@ -274,7 +274,7 @@ example response:
 }
 ```
 
-- GET /api/study_sessions
+- GET /api/v1/study_sessions
 ```json
 {
     "items": [
@@ -295,7 +295,7 @@ example response:
 }
 ```
 
-- /api/study_sessions/:id
+- /api/v1/study_sessions/:id
 ```json
 {
   "id": 12,
@@ -307,7 +307,7 @@ example response:
 }
 ```
 
-- /api/study_sessions/:id/words
+- /api/v1/study_sessions/:id/words
 ```json
 { 
     "items": [
@@ -322,7 +322,7 @@ example response:
 }
 ```
 
- POST /api/study_sessions/:id/words/:word_id/review
+ POST /api/v1/study_sessions/:id/words/:word_id/review
  Review words
 request params:
 
@@ -347,7 +347,7 @@ response:
 }
 ```
 
-- POST /api/reset_history
+- POST /api/v1/reset_history
 ```json
 {
     "success": true,
@@ -355,7 +355,7 @@ response:
 }
 ```
 
-- POST /api/full_reset
+- POST /api/v1/full_reset
 ```json
 {
     "success": true,

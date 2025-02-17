@@ -8,7 +8,9 @@ import {
 } from '../schemas/studyActivity.js';
 
 export class StudyActivityController {
-  constructor(private studyActivityService: StudyActivityService) {}
+  constructor(private studyActivityService: StudyActivityService) {
+    console.log("✅ StudyActivityService Initialized:", studyActivityService);
+  }
 
   getStudyActivities = async (
     request: FastifyRequest<{
@@ -16,10 +18,66 @@ export class StudyActivityController {
     }, ZodTypeProvider>,
     reply: FastifyReply,
   ) => {
+    
     const { page, limit } = request.query;
     const result = await this.studyActivityService.findAll(page, limit);
     return reply.send(result);
   };
+
+  getStudySessionsForActivity = async (
+    request: FastifyRequest<{ Params: { id: number } }, ZodTypeProvider>,
+    reply: FastifyReply
+  ) => {
+    try {
+      const activityId = Number(request.params.id);
+      if (isNaN(activityId)) {
+        return reply.status(400).send({ error: 'Invalid activity ID' });
+      }
+  
+      console.log("✅ Checking if studyActivityService is defined:", this.studyActivityService);
+      console.log("📌 Fetching sessions for activity:", activityId);
+  
+      if (!this.studyActivityService || !this.studyActivityService.getStudySessionsForActivity) {
+        if (!this.studyActivityService) {
+          console.error("❌ ERROR: studyActivityService is undefined");
+        }
+        if (!this.studyActivityService.getStudySessionsForActivity) {
+          console.error("❌ ERROR: missing method getStudySessionsForActivity!");
+        }
+  
+        return reply.status(500).send({ error: "Internal Server Error - Service Not Available" });
+      }
+  
+      const sessions = await this.studyActivityService.getStudySessionsForActivity(activityId);
+      if (!sessions.length) {
+        return reply.status(404).send({ error: 'No study sessions found for this activity' });
+      }
+  
+      return reply.send({
+        study_sessions: sessions.map(session => ({
+          id: session.id,
+          activity_name: session.studyActivity.name,
+          group_name: session.group.name,
+          start_time: session.startTime ? session.startTime.toISOString() : null,
+          end_time: session.endTime ? session.endTime.toISOString() : null,
+          review_items_count: session._count.studyResults || 0,
+        })),
+        pagination: {
+          current_page: 1,
+          total_pages: 1,
+          total_items: sessions.length,
+          items_per_page: sessions.length,
+        },
+      });
+  
+    } catch (error) {
+      console.error("❌ Error fetching study sessions for activity:", error);
+      return reply.status(500).send({ error: "Internal Server Error" });
+    }
+  };
+  
+  
+  
 
   getStudyActivity = async (
     request: FastifyRequest<{
