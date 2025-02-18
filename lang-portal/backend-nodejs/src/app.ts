@@ -32,10 +32,20 @@ export async function buildApp() {
 
   // Register CORS
   await app.register(cors, {
-    origin: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    origin: "http://localhost:5173", // Allow requests from frontend
+    credentials: true, // Allow cookies/sessions
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   });
+
+  app.addHook("onRequest", async (request, reply) => {
+    reply.header("Access-Control-Allow-Origin", "http://localhost:5173");
+    reply.header("Access-Control-Allow-Credentials", "true");
+    reply.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE");
+    reply.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  });
+  
+  
 
   // Register Swagger
   // Temporarily disabled

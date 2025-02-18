@@ -1,95 +1,134 @@
-import React, { useState, useEffect } from 'react'
-import StudySessionsTable, { type StudySessionSortKey } from '../components/StudySessionsTable'
-import Pagination from '../components/Pagination'
-import { type StudySession, fetchStudySessions } from '../services/api'
+import { useQuery } from "@tanstack/react-query";
+import type { StudySession, StudyActivity } from "@/types/schema";import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { format } from "date-fns";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default function Sessions() {
-  const [sessions, setSessions] = useState<StudySession[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [sortKey, setSortKey] = useState<StudySessionSortKey>('startTime')
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
-  const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
-  const itemsPerPage = 10
+  const { data, isLoading: sessionsLoading } = useQuery<{ items: StudySession[] }>({
+    queryKey: ["/study-sessions"],
+  });
+  
 
-  useEffect(() => {
-    const loadSessions = async () => {
-      try {
-        setLoading(true)
-        const response = await fetchStudySessions(currentPage, itemsPerPage)
-        setSessions(response.items)
-        setTotalPages(response.total_pages)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load sessions')
-      } finally {
-        setLoading(false)
-      }
-    }
+  const sessions = data?.items ?? []; // Extract items safely
 
-    loadSessions()
-  }, [currentPage])
+  // console.log("Extracted Sessions:", sessions);
+  //   sessions.forEach((session) => {
+  //     console.log(`Session ID: ${session.id}, Start Time: ${session.start_time}, End Time: ${session.end_time}`);
+  //   });
 
-  const handleSort = (key: StudySessionSortKey) => {
-    if (key === sortKey) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
-    } else {
-      setSortKey(key)
-      setSortDirection('asc')
-    }
+  const { data: activities, isLoading: activitiesLoading } = useQuery<StudyActivity[]>({
+    queryKey: ["/study-activities"],
+  });
+
+  if (sessionsLoading || activitiesLoading) {
+    return <div>Loading...</div>;
   }
 
-  if (loading) {
-    return <div className="text-center py-4">Loading...</div>
-  }
+  const getActivityName = (activityId: number) => {
+    return activities?.find((a) => a.id === activityId)?.name ?? "Unknown Activity";
+  };
 
-  if (error) {
-    return <div className="text-red-500 text-center py-4">{error}</div>
-  }
-
-  const sortedSessions = [...sessions].sort((a, b) => {
-    const aValue = a[sortKey.toLowerCase() as keyof StudySession]
-    const bValue = b[sortKey.toLowerCase() as keyof StudySession]
-    if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1
-    if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1
-    return 0
-  })
-
-  const paginatedSessions = sortedSessions.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  )
+  // Calculate statistics
+  const totalSessions = sessions?.length ?? 0;
+  const averageScore =
+    sessions && sessions.length > 0
+      ? Math.round(
+          sessions.reduce((acc, session) => acc + (session.score ?? 0), 0) /
+            sessions.length
+        )
+      : 0;
+  const bestScore =
+    sessions && sessions.length > 0
+      ? Math.max(...sessions.map((s) => s.score ?? 0))
+      : 0;
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Study Sessions</h1>
-      <StudySessionsTable
-        sessions={paginatedSessions}
-        sortKey={sortKey}
-        sortDirection={sortDirection}
-        onSort={handleSort}
-      />
-      {totalPages > 1 && (
-        <div className="flex justify-between items-center">
-          <button
-            onClick={() => setCurrentPage(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="px-4 py-2 font-medium text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Previous
-          </button>
-          <span className="text-gray-600 dark:text-gray-300">
-            Page <span className="font-bold">{currentPage}</span> of {totalPages}
-          </span>
-          <button
-            onClick={() => setCurrentPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="px-4 py-2 font-medium text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Next
-          </button>
-        </div>
-      )}
+    <div className="space-y-8">
+      <h1 className="text-3xl font-bold">Study Sessions</h1>
+
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-medium">Total Sessions</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalSessions}</div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-medium">Average Score</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{averageScore}%</div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-medium">Best Score</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{bestScore}%</div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Session History</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Date</TableHead>
+                <TableHead>Activity</TableHead>
+                <TableHead>Duration</TableHead>
+                <TableHead>Score</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {sessions
+                ?.sort(
+                  (a, b) =>
+                    new Date(b.startTime).getTime() -
+                    new Date(a.startTime).getTime()
+                )
+                .map((session) => {
+                  const duration =
+                  session.start_time && session.end_time
+                    ? Math.round(
+                        (new Date(session.end_time).getTime() - new Date(session.start_time).getTime()) / 1000 / 60
+                      )
+                    : "Unknown Duration";
+                
+
+                  return (
+                    <TableRow key={session.id}>
+                      <TableCell>
+                        {session.start_time
+                          ? format(new Date(session.start_time), "MMM d, yyyy HH:mm")
+                          : "Unknown Date"}
+                      </TableCell>
+                      <TableCell>{session.activity_name || "Unknown Activity"}</TableCell>
+                      <TableCell>{duration} minutes</TableCell>
+                      <TableCell>{session.score}%</TableCell>
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     </div>
-  )
+  );
 }

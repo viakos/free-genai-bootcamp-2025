@@ -1,82 +1,158 @@
-import React, { useState, useEffect } from 'react'
-import { fetchWords, type Word } from '../services/api'
-import WordsTable, { WordSortKey } from '../components/WordsTable'
+import { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { Link } from "wouter";
+import { type Word, insertWordSchema } from "@/types/schema";import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+import { queryClient } from "@/lib/queryClient";
 
 export default function Words() {
-  const [words, setWords] = useState<Word[]>([])
-  const [sortKey, setSortKey] = useState<WordSortKey>('kanji')
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
-  const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [open, setOpen] = useState(false);
+  const { toast } = useToast();
+  const form = useForm({
+    resolver: zodResolver(insertWordSchema),
+    defaultValues: {
+      thai: "",
+      phonetic: "",
+      english: "",
+    },
+  });
 
-  useEffect(() => {
-    const loadWords = async () => {
-      setIsLoading(true)
-      setError(null)
-      try {
-        const response = await fetchWords(currentPage, sortKey, sortDirection)
-        setWords(response.words)
-        setTotalPages(response.total_pages)
-      } catch (err) {
-        setError('Failed to load words')
-        console.error(err)
-      } finally {
-        setIsLoading(false)
-      }
-    }
+  // const { data: words, isLoading } = useQuery<Word[]>({
+  //   queryKey: ["/words"],
+  // });
 
-    loadWords()
-  }, [currentPage, sortKey, sortDirection])
+  const { data, isLoading } = useQuery<{ words: Word[] }>({
+    queryKey: ["/words"],
+  });
 
-  const handleSort = (key: WordSortKey) => {
-    if (key === sortKey) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
-    } else {
-      setSortKey(key)
-      setSortDirection('asc')
-    }
-  }
+  const words = data?.words ?? [];
+
+  const createWord = useMutation({
+    mutationFn: async (data: typeof form.getValues) => {
+      const res = await apiRequest("POST", "/words", data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/words"] });
+      setOpen(false);
+      form.reset();
+      toast({
+        title: "Success",
+        description: "Word created successfully",
+      });
+    },
+  });
 
   if (isLoading) {
-    return <div className="text-center py-4">Loading...</div>
-  }
-
-  if (error) {
-    return <div className="text-red-500 text-center py-4">{error}</div>
+    return <div>Loading...</div>;
   }
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Words</h1>
-      
-      <WordsTable 
-        words={words}
-        sortKey={sortKey}
-        sortDirection={sortDirection}
-        onSort={handleSort}
-      />
-
-      <div className="flex justify-center space-x-2">
-        <button
-          onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-          disabled={currentPage === 1}
-          className="px-4 py-2 border rounded-md bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600 disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-gray-700"
-        >
-          Previous
-        </button>
-        <span className="px-4 py-2 text-gray-800 dark:text-gray-200">
-          Page {currentPage} of {totalPages}
-        </span>
-        <button
-          onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-          disabled={currentPage === totalPages}
-          className="px-4 py-2 border rounded-md bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600 disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-gray-700"
-        >
-          Next
-        </button>
+    <div className="space-y-8">
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold">Words</h1>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button>Add Word</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add New Word</DialogTitle>
+            </DialogHeader>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit((data) => createWord.mutate(data))}
+                className="space-y-4"
+              >
+                <FormField
+                  control={form.control}
+                  name="thai"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Thai</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="phonetic"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phonetic</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="english"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>English</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit">Create</Button>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
       </div>
+
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Thai</TableHead>
+            <TableHead>Phonetic</TableHead>
+            <TableHead>English</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+        {words.length > 0 ? (
+          words.map((word) => (
+            <TableRow key={word.id}>
+              <TableCell>{word.thai}</TableCell>
+              <TableCell>{word.romanized}</TableCell>
+              <TableCell>{word.english}</TableCell>
+            </TableRow>
+          ))
+        ) : (
+          <TableRow>
+            <TableCell colSpan={3} className="text-center">
+              No words found.
+            </TableCell>
+          </TableRow>
+        )}
+        </TableBody>
+      </Table>
     </div>
-  )
+  );
 }

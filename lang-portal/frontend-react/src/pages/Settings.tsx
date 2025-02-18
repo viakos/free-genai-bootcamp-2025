@@ -1,94 +1,121 @@
-import { useState } from 'react'
-import { useTheme } from '@/components/theme-provider'
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Settings() {
-  const { theme, setTheme } = useTheme()
-  const [showResetDialog, setShowResetDialog] = useState(false)
-  const [resetConfirmation, setResetConfirmation] = useState('')
+  const { toast } = useToast();
+  const [settings, setSettings] = useState({
+    notifications: true,
+    dailyGoal: "10",
+    difficulty: "normal",
+    showPhonetic: true,
+  });
 
-  const handleReset = async () => {
-    if (resetConfirmation.toLowerCase() === 'reset me') {
-      try {
-        const response = await fetch('http://localhost:5000/api/study-sessions/reset', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to reset history');
-        }
-
-        // Reset was successful
-        setShowResetDialog(false);
-        setResetConfirmation('');
-        
-        // Show success message
-        alert('Study history has been cleared successfully');
-      } catch (error) {
-        console.error('Error resetting history:', error);
-        alert('Failed to reset history. Please try again.');
-      }
-    }
-  }
+  const handleSave = () => {
+    // In a real app, this would save to backend
+    toast({
+      title: "Settings Saved",
+      description: "Your preferences have been updated.",
+    });
+  };
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Settings</h1>
-      
-      <div className="flex items-center justify-between">
-        <span className="text-gray-700 dark:text-gray-300">Theme</span>
-        <select
-          value={theme}
-          onChange={(e) => setTheme(e.target.value as 'light' | 'dark' | 'system')}
-          className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md px-3 py-1 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="light">Light</option>
-          <option value="dark">Dark</option>
-          <option value="system">System</option>
-        </select>
-      </div>
+    <div className="space-y-8">
+      <h1 className="text-3xl font-bold">Settings</h1>
 
-      <div>
-        <button
-          onClick={() => setShowResetDialog(true)}
-          className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
-        >
-          Reset History
-        </button>
-      </div>
-
-      {showResetDialog && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg">
-            <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">Confirm Reset</h2>
-            <p className="mb-4 text-gray-600 dark:text-gray-400">
-              Type "reset me" to confirm database reset:
-            </p>
-            <input
-              type="text"
-              value={resetConfirmation}
-              onChange={(e) => setResetConfirmation(e.target.value)}
-              className="border rounded px-2 py-1 mb-4 w-full text-gray-800 dark:text-white dark:bg-gray-700"
-            />
-            <div className="flex justify-end space-x-2">
-              <button
-                onClick={() => setShowResetDialog(false)}
-                className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleReset}
-                className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
-              >
-                Confirm Reset
-              </button>
+      <Card>
+        <CardHeader>
+          <CardTitle>Study Preferences</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label>Daily Word Goal</Label>
+              <div className="text-sm text-muted-foreground">
+                Number of words to learn each day
+              </div>
             </div>
+            <Select
+              value={settings.dailyGoal}
+              onValueChange={(value) =>
+                setSettings({ ...settings, dailyGoal: value })
+              }
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select goal" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="5">5 words</SelectItem>
+                <SelectItem value="10">10 words</SelectItem>
+                <SelectItem value="15">15 words</SelectItem>
+                <SelectItem value="20">20 words</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-        </div>
-      )}
+
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label>Difficulty Level</Label>
+              <div className="text-sm text-muted-foreground">
+                Adjust the challenge level of exercises
+              </div>
+            </div>
+            <Select
+              value={settings.difficulty}
+              onValueChange={(value) =>
+                setSettings({ ...settings, difficulty: value })
+              }
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select difficulty" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="easy">Easy</SelectItem>
+                <SelectItem value="normal">Normal</SelectItem>
+                <SelectItem value="hard">Hard</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label>Show Phonetic Spelling</Label>
+              <div className="text-sm text-muted-foreground">
+                Display pronunciation guide for Thai words
+              </div>
+            </div>
+            <Switch
+              checked={settings.showPhonetic}
+              onCheckedChange={(checked) =>
+                setSettings({ ...settings, showPhonetic: checked })
+              }
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label>Study Reminders</Label>
+              <div className="text-sm text-muted-foreground">
+                Receive notifications for daily practice
+              </div>
+            </div>
+            <Switch
+              checked={settings.notifications}
+              onCheckedChange={(checked) =>
+                setSettings({ ...settings, notifications: checked })
+              }
+            />
+          </div>
+
+          <Button onClick={handleSave} className="w-full">
+            Save Changes
+          </Button>
+        </CardContent>
+      </Card>
     </div>
-  )
+  );
 }
