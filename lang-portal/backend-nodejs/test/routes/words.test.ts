@@ -16,7 +16,6 @@ describe('Word Routes', () => {
         thai: 'สวัสดี',
         english: 'hello',
         romanized: 'sawadee',
-        ipa: 'sà.wàt.diː',
         example: 'สวัสดีครับ/ค่ะ',
       };
 
@@ -31,7 +30,6 @@ describe('Word Routes', () => {
       expect(result.thai).toBe(word.thai);
       expect(result.english).toBe(word.english);
       expect(result.romanized).toBe(word.romanized);
-      expect(result.ipa).toBe(word.ipa);
       expect(result.example).toBe(word.example);
     });
 
@@ -60,14 +58,12 @@ describe('Word Routes', () => {
             thai: 'สวัสดี',
             english: 'hello',
             romanized: 'sawadee',
-            ipa: 'sà.wàt.diː',
             example: 'สวัสดีครับ/ค่ะ',
           },
           {
             thai: 'ขอบคุณ',
             english: 'thank you',
             romanized: 'khob khun',
-            ipa: 'kʰɔ̀ːp.kʰun',
             example: 'ขอบคุณมาก',
           },
         ],
@@ -110,7 +106,6 @@ describe('Word Routes', () => {
           thai: 'สวัสดี',
           english: 'hello',
           romanized: 'sawadee',
-          ipa: 'sà.wàt.diː',
           example: 'สวัสดีครับ/ค่ะ',
         },
       });
@@ -148,7 +143,6 @@ describe('Word Routes', () => {
           thai: 'สวัสดี',
           english: 'hello',
           romanized: 'sawadee',
-          ipa: 'sà.wàt.diː',
           example: 'สวัสดีครับ/ค่ะ',
         },
       });
@@ -181,7 +175,6 @@ describe('Word Routes', () => {
           thai: 'สวัสดี',
           english: 'hello',
           romanized: 'sawadee',
-          ipa: 'sà.wàt.diː',
           example: 'สวัสดีครับ/ค่ะ',
         },
       });

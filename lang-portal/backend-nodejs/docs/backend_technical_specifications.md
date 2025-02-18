@@ -295,7 +295,7 @@ example response:
 }
 ```
 
-- /api/v1/study-sessions/:id
+- GET /api/v1/study-sessions/:id
 ```json
 {
   "id": 12,
@@ -307,7 +307,7 @@ example response:
 }
 ```
 
-- /api/v1/study_sessions/:id/words
+- GET /api/v1/study_sessions/:id/words
 ```json
 { 
     "items": [

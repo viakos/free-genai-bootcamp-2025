@@ -72,7 +72,6 @@ export class StudySessionController {
       const id = Number(request.params.id);
       const session = await this.studySessionService.findById(id);
   
-      console.log("SESSSSSSSION:", session); // ✅ Debugging log
       return reply.status(200).send(session); // ✅ This actually sends the response!
       
     } catch (error) {
@@ -87,38 +86,34 @@ export class StudySessionController {
     request: FastifyRequest<{
       Params: { id: number; word_id: number };
       Body: { correct: boolean };
-    }, ZodTypeProvider>, // ✅ Added ZodTypeProvider for schema validation
+    }, ZodTypeProvider>,
     reply: FastifyReply
   ) => {
     try {
-      console.log("🟢 Received Review Request:", request.params, request.body);
-  
-      // 🔥 Check if `studySessionService` is correctly initialized
-      if (!this.studySessionService) {
-        console.error("❌ ERROR: `studySessionService` is undefined!");
-        return reply.status(500).send({ error: "Internal Server Error: `studySessionService` is undefined" });
-      }
-  
-      // 🔥 Check if `addReview` exists
-      if (typeof this.studySessionService.addReview !== "function") {
-        console.error("❌ ERROR: `addReview` method does not exist in `studySessionService`!");
-        return reply.status(500).send({ error: "Internal Server Error: `addReview` method is missing" });
-      }
-  
       const { id, word_id } = request.params;
       const { correct } = request.body;
   
-      // Call the service method
+      if (!this.studySessionService || typeof this.studySessionService.addReview !== "function") {
+        return reply.status(500).send({ error: "Internal Server Error" });
+      }
+  
       const review = await this.studySessionService.addReview(id, word_id, correct);
   
-      return reply.status(201).send(review);
+      return reply.status(201).send({
+        success: true,
+        study_session_id: id,
+        word_id: word_id,
+        correct,
+        created_at: new Date().toISOString(),
+      });
+  
     } catch (error) {
-      console.error("❌ ERROR in reviewWord:", error);
       if (error instanceof Error && error.message.includes("not found")) {
         return reply.status(404).send({ error: "Study session or word not found" });
       }
       return reply.status(500).send({ error: "Internal Server Error" });
     }
   };
+  
   
 }

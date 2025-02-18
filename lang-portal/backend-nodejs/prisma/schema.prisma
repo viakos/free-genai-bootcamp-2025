@@ -57,7 +57,7 @@ model StudySession {
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   endTime         DateTime?
-  startTime       DateTime?
+  startTime       DateTime      @default(now()) // ✅ Make startTime required with a default
   studyResults    StudyResult[]
   studyActivity   StudyActivity @relation(fields: [studyActivityId], references: [id])
   group           Group         @relation(fields: [groupId], references: [id])

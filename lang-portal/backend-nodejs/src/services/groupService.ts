@@ -125,52 +125,6 @@ export class GroupService {
   }
   
 
-  async create(data: GroupSchema) {
-    return this.prisma.group.create({
-      data,
-    });
-  }
-
-  async update(id: number, data: Partial<GroupSchema>) {
-    return this.prisma.group.update({
-      where: { id },
-      data,
-    });
-  }
-
-  async delete(id: number) {
-    return this.prisma.group.delete({
-      where: { id },
-    });
-  }
-
-  async addWords(groupId: number, wordIds: number[]) {
-    const data = wordIds.map((wordId) => ({
-      groupId,
-      wordId,
-    }));
-
-    await this.prisma.wordsInGroups.createMany({
-      data,
-      skipDuplicates: true,
-    });
-
-    return this.findById(groupId);
-  }
-
-  async removeWords(groupId: number, wordIds: number[]) {
-    await this.prisma.wordsInGroups.deleteMany({
-      where: {
-        groupId,
-        wordId: {
-          in: wordIds,
-        },
-      },
-    });
-
-    return this.findById(groupId);
-  }
-
   async findGroupStudySessions(groupId: number, page: number = 1, limit: number = 10) {
     const skip = (page - 1) * limit;
     const limitNum = Math.max(1, Number(limit));

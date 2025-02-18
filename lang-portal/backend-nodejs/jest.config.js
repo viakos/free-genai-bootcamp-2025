@@ -6,6 +6,11 @@ export default {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
+  transform: {
+    '^.+\\.tsx?$': ['ts-jest', {
+      useESM: true,
+    }],
+  },
   setupFilesAfterEnv: ['<rootDir>/test/setup.ts'],
   coverageDirectory: 'coverage',
   collectCoverageFrom: [

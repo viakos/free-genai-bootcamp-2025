@@ -38,16 +38,6 @@
     "pino-pretty": "^10.3.0",
     "zod": "^3.22.0"
   },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "node",
-    "setupFilesAfterEnv": [
-      "<rootDir>/test/setup.ts"
-    ],
-    "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/src/$1"
-    }
-  },
   "devDependencies": {
     "@types/jest": "^29.5.14",
     "@types/node": "^20.17.18",

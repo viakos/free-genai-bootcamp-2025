@@ -4,12 +4,12 @@ import cors from '@fastify/cors';
 // import swagger from '@fastify/swagger';
 // import swaggerUi from '@fastify/swagger-ui';
 import { PrismaClient } from '@prisma/client';
-import { wordRoutes } from './routes/words.js';
-import { groupRoutes } from './routes/groups.js';
-import { studyActivityRoutes } from './routes/studyActivities.js';
-import { studySessionRoutes } from './routes/studySessions.js';
-import { dashboardRoutes } from './routes/dashboard.js';
-import { adminRoutes } from './routes/admin.js';
+import { wordRoutes } from './routes/words';
+import { groupRoutes } from './routes/groups';
+import { studyActivityRoutes } from './routes/studyActivities';
+import { studySessionRoutes } from './routes/studySessions';
+import { dashboardRoutes } from './routes/dashboard';
+import { adminRoutes } from './routes/admin';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -62,14 +62,17 @@ const start = async () => {
 
     await app.listen({ port, host });
     console.log(`Server is running on http://${host}:${port}`);
-  } catch (err) {
+  } catch (err: unknown) {
     console.error('Error starting server:', err);
-    if (err.errors) {
-        console.error('Validation errors:', JSON.stringify(err.errors, null, 2));
+    
+    if (err && typeof err === 'object' && 'errors' in err) {
+      console.error('Validation errors:', JSON.stringify(err.errors, null, 2));
     }
-    if (err.code) {
-        console.error('Error code:', err.code);
+
+    if (err && typeof err === 'object' && 'code' in err) {
+      console.error('Error code:', err.code);
     }
+
     process.exit(1);
   }
 };
