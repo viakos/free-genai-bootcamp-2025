@@ -3,8 +3,6 @@ from typing import Dict
 import json
 from collections import Counter
 import re
-
-
 from backend.chat import BedrockChat
 
 
