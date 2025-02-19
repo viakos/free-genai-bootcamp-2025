@@ -12,8 +12,6 @@ from backend.get_transcript import YouTubeTranscriptDownloader
 from backend.chat import BedrockChat
 
 
-
-
 # Page config
 st.set_page_config(
     page_title="Japanese Learning Assistant",
