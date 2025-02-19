@@ -12,8 +12,6 @@ load_dotenv()
 # Model ID
 MODEL_ID = "amazon.nova-micro-v1:0"
 
-
-
 class BedrockChat:
     def __init__(self, model_id: str = MODEL_ID):
         """Initialize Bedrock chat client"""

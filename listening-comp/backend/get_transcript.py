@@ -1,3 +1,5 @@
+
+import os
 from youtube_transcript_api import YouTubeTranscriptApi
 from typing import Optional, List, Dict
 
@@ -63,9 +65,8 @@ class YouTubeTranscriptDownloader:
         print(f"Saving transcript to {filename}")
         
         try:
-            print(f"Transcript: {transcript}")
+            #print(f"Transcript: {transcript}")
             with open(filename, 'w', encoding='utf-8') as f:
-                print("0")
                 for entry in transcript:
                     f.write(f"{entry['text']}\n")
             return True

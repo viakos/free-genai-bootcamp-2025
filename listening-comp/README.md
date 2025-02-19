@@ -1,5 +1,14 @@
+# Frontend
+```bash
+streamlit run frontend/main.py
+```
+When dowmloading the Transcript the file is downloaded in the `transcripts` folder in the directory where the frontend script is run.
+To downalod the transcript in the backend folder the frontend has to be run from the frontent folder with streamlit run ../frontend/main.py
+
+
+
+
 # language-learning-assistant
-This is for the generative AI bootcamp
 
 **Difficulty:** Level 200 *(Due to RAG implementation and multiple AWS services integration)*
 

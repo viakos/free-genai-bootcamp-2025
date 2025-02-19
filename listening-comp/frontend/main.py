@@ -197,6 +197,8 @@ def render_transcript_stage():
             try:
                 downloader = YouTubeTranscriptDownloader()
                 transcript = downloader.get_transcript(url)
+                video_id = downloader.extract_video_id(url)
+                downloader.save_transcript(transcript, video_id)
                 if transcript:
                     # Store the raw transcript text in session state
                     transcript_text = "\n".join([entry['text'] for entry in transcript])
