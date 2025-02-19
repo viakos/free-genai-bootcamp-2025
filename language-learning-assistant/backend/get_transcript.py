@@ -60,9 +60,12 @@ class YouTubeTranscriptDownloader:
             bool: True if successful, False otherwise
         """
         filename = f"./transcripts/{filename}.txt"
+        print(f"Saving transcript to {filename}")
         
         try:
+            print(f"Transcript: {transcript}")
             with open(filename, 'w', encoding='utf-8') as f:
+                print("0")
                 for entry in transcript:
                     f.write(f"{entry['text']}\n")
             return True
@@ -96,4 +99,5 @@ def main(video_url, print_transcript=False):
 if __name__ == "__main__":
     video_id = "https://www.youtube.com/watch?v=sY7L5cfCWno&list=PLkGU7DnOLgRMl-h4NxxrGbK-UdZHIXzKQ"  # Extract from URL: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     transcript = main(video_id, print_transcript=True)
-        
+    print(transcript)
+              

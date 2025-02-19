@@ -8,6 +8,7 @@ import os
 
 # Get the parent directory and add it to sys.path to be able to import the backend modules
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from backend.get_transcript import YouTubeTranscriptDownloader
 from backend.chat import BedrockChat
 
 
