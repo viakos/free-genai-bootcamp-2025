@@ -40,46 +40,46 @@ class TextPatternExtractor:
         """
         prompt = f"""
         ## **Role:**
-        You are a text processing expert specialized in transforming Japanese listening comprehension scripts into structured XML patterns.
+        You are a text processing expert specialized in transforming Japanese listening comprehension scripts into structured XML items.
 
         ## **Instruction:**  
         Follow the exact format, structure, and phrasing demonstrated in the provided examples. Your output must replicate the hierarchical XML structure, using correct tags and logical formatting.
 
         ## **Guidelines:**  
         1. **Input:** The input is a transcript of a listening comprehension exercise in Japanese.  
-        2. **Output:** Convert the input into XML patterns using the following tags: `<patterns>`, `<pattern>`, `<introduction>`, `<conversation>`, `<question>`, and `<propositions>`.  
-        3. **Pattern Structure:**  
+        2. **Output:** Convert the input into XML items using the following tags: `<items>`, `<item>`, `<introduction>`, `<conversation>`, `<question>`, and `<propositions>`.  
+        3. **Item Structure:**  
         - `<introduction>`: Briefly summarize the setting and participants.  
         - `<conversation>`: Use the exact conversation text from the input.  
         - `<question>`: Extract the main question posed after the conversation.  
         - `<propositions>`: Provide four propositions using `<proposition id="X">`, each describing a visual scene based on the conversation.  
         4. **Formatting Rules:**  
         - Use exact formatting and spacing as shown in the example.  
-        - Each `<pattern>` must contain exactly one `<introduction>`, one `<conversation>`, one `<question>`, and four `<proposition>` elements.  
+        - Each `<item>` must contain exactly one `<introduction>`, one `<conversation>`, one `<question>`, and four `<proposition>` elements.  
         - Ensure each `<proposition>` is detailed, mentioning character appearance, environment, and mood.  
 
         ## **Examples:**  
         For each conversation in the input, produce output as follows:
 
         ```xml
-        <patterns>
-            <pattern>
+        <items>
+            <item>
                 <introduction>料理のクラスで女の先生と男の学生が話しています</introduction>
                 <conversation>ではこれからカレーを作りましょう先生私は野菜を切りましょうか いえ野菜じゃなくて肉を切ってください はい</conversation>
                 <question>男の学生はこの後すぐ何をしますか</question>
                 <propositions>
-                    <proposition id="1">A young male student cutting vegetables in a cooking class, with a female teacher nearby, modern kitchen setting, realistic style</proposition>
-                    <proposition id="2">A young male student cutting meat in a cooking class, with a female teacher supervising, modern kitchen setting, realistic style</proposition>
-                    <proposition id="3">A young male student cooking rice in a pot, focused expression, modern kitchen setting, realistic style</proposition>
-                    <proposition id="4">A young male student washing dishes at a sink in a cooking class, stainless steel kitchen, realistic style</proposition>
+                    <proposition id="1">A young male student cutting vegetables in a cooking class, with a female teacher nearby, modern kitchen setting, anime style</proposition>
+                    <proposition id="2">A young male student cutting meat in a cooking class, with a female teacher supervising, modern kitchen setting, anime style</proposition>
+                    <proposition id="3">A young male student cooking rice in a pot, focused expression, modern kitchen setting, anime style</proposition>
+                    <proposition id="4">A young male student washing dishes at a sink in a cooking class, stainless steel kitchen, anime style</proposition>
                 </propositions>
-            </pattern>
-        </patterns>
+            </item>
+        </items>
         ```
 
         ## **Process:**  
-        1. **Identify Patterns:** Divide the source text into separate patterns using contextual breaks.  
-        2. **Extract Elements:** For each pattern, extract the introduction, conversation, question, and propositions.  
+        1. **Identify Items:** Divide the source text into separate items using contextual breaks.  
+        2. **Extract Elements:** For each item, extract the introduction, conversation, question, and propositions.  
         3. **Translate Propositions:** Convert each proposition into a visual description for text-to-image generation.  
         4. **Format Output:** Ensure the output uses proper XML formatting and indentation.  
 
@@ -91,7 +91,7 @@ class TextPatternExtractor:
         - Maintain the realistic style in all visual descriptions.  
 
         ## **Final Check:**  
-        - Verify that each `<pattern>` is correctly structured.  
+        - Verify that each `<item>` is correctly structured.  
         - Confirm that all four propositions are visually distinct but related to the conversation.  
         - Ensure no elements are missing or misformatted.  
 
