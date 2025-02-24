@@ -1,4 +1,5 @@
 import json
+import os
 from fastapi import FastAPI, HTTPException
 from typing import Optional
 from backend import bedrock_client
@@ -61,7 +62,6 @@ class TextPatternExtractor:
         - Only include questions that differ by actions, visual details, or contextual elements (not relative positioning).  
 
         ## **Example:**
-        ```xml
         <question>
         Introduction: 朝会の練習でN5の試験模試をしている
 
@@ -69,7 +69,7 @@ class TextPatternExtractor:
 
         Question: 女の人は男の人に何を出しますか
         </question>
-        ```
+        
 
         ## **Process:**  
         0. **Remove any text that talk about a test or proficiency or mention N5**
@@ -303,58 +303,61 @@ class BedrockChat:
 def get_bedrock_chat() -> BedrockChat:
     return BedrockChat()
 
-def save_transcript(transcript: Dict, video_id: str) -> bool:
+def process_and_save_questions(text: str, filename: str) -> str:
+    """
+    Process transcript text and save structured questions to file
+    
+    Args:
+        text (str): Combined transcript text to process
+        filename (str): Name of the file to save the processed questions
+        
+    Returns:
+        str: The processed and parsed text
+    """
+    extractor = TextPatternExtractor()
+    parsed_text = extractor.parse_transcript(text)
+    
+    # Save to file
+    questions_filename = os.path.join("backend", "data", "questions", filename)
+    os.makedirs(os.path.dirname(questions_filename), exist_ok=True)
+    print(parsed_text)
+    with open(questions_filename, mode='w', encoding='utf-8') as f:
+        f.write(parsed_text)
+    
+    return parsed_text
+
+def save_transcript(transcript: List[Dict], video_id: str) -> bool:
     """
     Save transcript to file
     
     Args:
-        transcript (Dict): Transcript data containing a list of entries under "transcript"
+        transcript (List[Dict]): List of transcript entries, each containing 'text' key
         video_id (str): Video ID used to name the output file
         
     Returns:
         bool: True if successful, False otherwise
     """
-    filename = f"{video_id}.txt"
-    print(f"Saving transcript to {filename}")
-
-    
-    # Extract the list of transcript entries
-    entries = transcript
-    # Extract only the "text" values from each entry
-    text_values = [entry.get("text", "") for entry in entries if isinstance(entry, dict)]
-    
-    # Combine all text values into a single string (one after another, no newline)
-    combined_text = "\n".join(text_values)  # <- Combined into a single line without spaces
-    with open(file=f"./backend/data/transcripts/{filename}", mode='w', encoding='utf-8') as f:
-        f.write(combined_text)
-    # extractor = TextPatternExtractor()
-    # parsed_text = extractor.parse_transcript(combined_text)
-    # # Save to file
-    # print(f"==== Parsed text: {parsed_text}")
-    # print(f"==== Filename: {filename}")
-    # with open(file=f"./backend/data/questions/{filename}", mode='w', encoding='utf-8') as f:
-    #     f.write(parsed_text)
-    # print("Transcript saved successfully.")
-    # return True
-
-    
-
-def extract_video_id(url: str) -> Optional[str]:
-        """
-        Extract video ID from YouTube URL
+    try:
+        combined_text = ""
+        for entry in transcript:  # transcript is now a list directly
+            combined_text += entry["text"] + "\n"
         
-        Args:
-            url (str): YouTube URL
+        if combined_text:
+            # Save transcript text
+            transcript_filename = os.path.join("backend", "data", "transcripts", f"{video_id}.txt")
+            print("Saving transcript to", transcript_filename)
+            os.makedirs(os.path.dirname(transcript_filename), exist_ok=True)
+            with open(transcript_filename, "w", encoding="utf-8") as f:
+                f.write(combined_text)
             
-        Returns:
-            Optional[str]: Video ID if found, None otherwise
-        """
-        if "v=" in url:
-            return url.split("v=")[1][:11]
-        elif "youtu.be/" in url:
-            return url.split("youtu.be/")[1][:11]
-        return None
-
+            # Process questions using the same text
+            filename = f"{video_id}.txt"
+            process_and_save_questions(combined_text, filename)
+            
+        return True
+    except Exception as e:
+        print(f"Error saving transcript: {str(e)}")
+        return False
 
 # Endpoint to generate a response
 @app.post("/invoke-llm")
@@ -370,15 +373,14 @@ async def invoke_llm(request: Request, chat: BedrockChat = Depends(get_bedrock_c
     response = chat.generate_response(message, inference_config)
     return {"response": response}
 
-# ✅ Endpoint: /get-transcript
-# ✅ Endpoint: /get-transcript
+# Endpoint: /get-transcript
 @app.get("/get-transcript")
 def get_transcript(video_url: str = Query(..., description="YouTube video URL")):
     """API Endpoint to get the transcript of a YouTube video."""
     downloader = YouTubeTranscriptDownloader()
     transcript = downloader.get_transcript(video_url)
-    video_id = extract_video_id(video_url)
-    print(f"****** Transcript: {transcript}")
+    video_id = downloader.extract_video_id(video_url)
+    # print(f"****** Transcript: {transcript}")
     save_transcript(transcript, video_id)
     
 
@@ -386,26 +388,6 @@ def get_transcript(video_url: str = Query(..., description="YouTube video URL"))
         raise HTTPException(status_code=404, detail="Transcript not found")
 
     return {"transcript": transcript}  # Just return raw data, no validation
-
-# # ✅ Endpoint: /get-transcript
-# @app.get("/get-transcript")
-# def get_transcript(video_url: str = Query(..., description="YouTube video URL")):
-#     """API Endpoint to get the transcript of a YouTube video."""
-#     downloader = YouTubeTranscriptDownloader()
-#     transcript = downloader.get_transcript(video_url)
-
-#     if transcript is None:
-#         raise HTTPException(status_code=404, detail="Transcript not found")
-
-#     return {"transcript": transcript}  # Just return raw data, no validation
-
-
-
-# ✅ Run the FastAPI server:
-# 1. Install dependencies: pip install fastapi uvicorn youtube-transcript-api pydantic
-# 2. Start the server: uvicorn backend.youtube_transcript_api:app --host 127.0.0.1 --port 8000 --reload
-
-
 
 # To run this API:
 # 1. Install FastAPI and Uvicorn: pip install fastapi uvicorn

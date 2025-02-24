@@ -19,7 +19,6 @@ You are a text processing AI specialized in transforming Japanese listening comp
    - Only include questions that differ by actions, visual details, or contextual elements (not relative positioning).  
 
 ## **Example:**
-```xml
 <question>
 Introduction: 朝会の練習でN5の試験模試をしている
 
@@ -43,7 +42,6 @@ Question: 女の人は男の人に何を出しますか
 
 This prompt ensures that **amazon.nova-micro-v1:0** produces clean, accurate `<question>` elements ready for downstream processing.
 
----
 
 **File Format:** Save this prompt as a `.txt` file for optimal use with the LLM.
 
