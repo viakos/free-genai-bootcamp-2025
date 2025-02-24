@@ -3,3 +3,7 @@ streamlit
 boto3
 youtube_transcript_api
 python-dotenv
+fastapi
+uvicorn
+pyyaml
+requests

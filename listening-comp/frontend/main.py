@@ -1,15 +1,17 @@
 import streamlit as st
-from typing import Dict
+from typing import Optional, List, Dict
 import json
 from collections import Counter
 import re
 import sys
 import os
+import requests
 
 # Get the parent directory and add it to sys.path to be able to import the backend modules
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from backend.get_transcript import YouTubeTranscriptDownloader
-from backend.chat import BedrockChat
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+# from backend.get_transcript import YouTubeTranscriptDownloader
+# from backend.chat import BedrockChat
+
 
 
 # Page config
@@ -24,6 +26,22 @@ if 'transcript' not in st.session_state:
     st.session_state.transcript = None
 if 'messages' not in st.session_state:
     st.session_state.messages = []
+
+def extract_video_id(url: str) -> Optional[str]:
+        """
+        Extract video ID from YouTube URL
+        
+        Args:
+            url (str): YouTube URL
+            
+        Returns:
+            Optional[str]: Video ID if found, None otherwise
+        """
+        if "v=" in url:
+            return url.split("v=")[1][:11]
+        elif "youtu.be/" in url:
+            return url.split("youtu.be/")[1][:11]
+        return None
 
 def render_header():
     """Render the header section"""
@@ -103,8 +121,8 @@ def render_chat_stage():
     st.header("Chat with Nova")
 
     # Initialize BedrockChat instance if not in session state
-    if 'bedrock_chat' not in st.session_state:
-        st.session_state.bedrock_chat = BedrockChat()
+    # if 'bedrock_chat' not in st.session_state:
+    #     st.session_state.bedrock_chat = BedrockChat()
 
     # Introduction text
     st.markdown("""
@@ -159,10 +177,22 @@ def process_message(message: str):
 
     # Generate and display assistant's response
     with st.chat_message("assistant", avatar="🤖"):
-        response = st.session_state.bedrock_chat.generate_response(message)
-        if response:
-            st.markdown(response)
-            st.session_state.messages.append({"role": "assistant", "content": response})
+        # Send a POST request to the backend
+        response = requests.post(
+            "http://127.0.0.1:8000/invoke-llm",
+            json={"message": message}  # Sending the message as JSON payload
+        )
+
+        # Check if the response is successful
+        if response.status_code == 200:
+            response_data = response.json()  # Parse the JSON response
+            response_text = response_data.get("response")  # Extract the response text
+            
+            if response_text:
+                st.markdown(response_text)  # Display the response
+                st.session_state.messages.append({"role": "assistant", "content": response_text})
+        else:
+            st.error(f"Error: {response.status_code} - {response.text}")
 
 
 
@@ -181,6 +211,87 @@ def count_characters(text):
     jp_chars = sum(1 for char in text if is_japanese(char))
     return jp_chars, len(text)
 
+def get_transcript(video_url: str):
+    """
+    Call the backend /get-transcript endpoint and return the transcript.
+    
+    Args:
+        video_url (str): The URL of the YouTube video.
+
+    Returns:
+        dict: Transcript response or error message.
+    """
+    backend_url = "http://127.0.0.1:8000/get-transcript"  # Update if deployed on another host
+
+    # Make the request
+    try:
+        response = requests.get(backend_url, params={"video_url": video_url})
+    
+        if response.status_code == 200:
+            print(f"****** Transcript: {response.text}")
+            return json.loads(response.text)  # Returns transcript as JSON
+        else:
+            print(f"Error: {response.status_code} - {response.text}")
+            return None
+
+    except requests.RequestException as e:
+        print(f"Request failed: {str(e)}")
+        return None
+
+def is_json_or_string(value):
+    """Check if the value is a valid JSON or just a string."""
+    # If it's already a dictionary (or list), it's JSON
+    if isinstance(value, (dict, list)):
+        return "JSON"
+    
+    # If it's a string, try to parse as JSON
+    if isinstance(value, str):
+        try:
+            # Attempt to parse the string as JSON
+            json.loads(value)
+            return "JSON"
+        except json.JSONDecodeError:
+            return "STRING"
+    
+    # Otherwise, it's neither
+    return "UNKNOWN"
+
+# def save_transcript(transcript: Dict, video_id: str) -> bool:
+#     """
+#     Save transcript to file
+    
+#     Args:
+#         transcript (Dict): Transcript data containing a list of entries under "transcript"
+#         video_id (str): Video ID used to name the output file
+        
+#     Returns:
+#         bool: True if successful, False otherwise
+#     """
+#     filename = f"./transcripts/{video_id}.txt"
+#     print(f"Saving transcript to {filename}")
+
+#     try:
+#         # Extract the list of transcript entries
+#         entries = transcript.get("transcript", [])
+#         # Extract only the "text" values from each entry
+#         text_values = [entry.get("text", "") for entry in entries if isinstance(entry, dict)]
+        
+#         # Combine all text values into a single string (one after another, no newline)
+#         combined_text = "\n".join(text_values)  # <- Combined into a single line without spaces
+        
+#         # Save to file
+#         with open(filename, 'w', encoding='utf-8') as f:
+#             f.write(combined_text)
+
+#         print("Transcript saved successfully.")
+#         return True
+
+#     except Exception as e:
+#         print(f"Error saving transcript: {str(e)}")
+#         return False
+
+
+        
 def render_transcript_stage():
     """Render the raw transcript stage"""
     st.header("Raw Transcript Processing")
@@ -195,13 +306,17 @@ def render_transcript_stage():
     if url:
         if st.button("Download Transcript"):
             try:
-                downloader = YouTubeTranscriptDownloader()
-                transcript = downloader.get_transcript(url)
-                video_id = downloader.extract_video_id(url)
-                downloader.save_transcript(transcript, video_id)
+                transcript = get_transcript(url)
+                video_id = extract_video_id(url)
+                # save_transcript(transcript, video_id)
+                print("0")
                 if transcript:
+                    entries = transcript.get("transcript", [])
+        # Extract only the "text" values from each entry
+                    text_values = [entry.get("text", "") for entry in entries if isinstance(entry, dict)]
+                    transcript_text = "\n".join(text_values)
                     # Store the raw transcript text in session state
-                    transcript_text = "\n".join([entry['text'] for entry in transcript])
+                    # transcript_text = "\n".join([entry['text'] for entry in transcript])
                     st.session_state.transcript = transcript_text
                     st.success("Transcript downloaded successfully!")
                 else:

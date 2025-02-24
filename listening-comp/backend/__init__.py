@@ -2,7 +2,7 @@
 
 import boto3
 import os
-from utils import load_settings
+from backend.utils import load_settings
 from dotenv import load_dotenv
 
 load_dotenv()

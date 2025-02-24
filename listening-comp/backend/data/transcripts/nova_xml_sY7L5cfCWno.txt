@@ -1,0 +1,92 @@
+```xml
+<items>
+    <item>
+        <introduction>朝会の練習でN5の試験模試をしている</introduction>
+        <conversation>朝会これからN5の懲戒試験を始めますメモを取ってもいいです問題用紙を開けてください問題1問題1では初めに質問を聞いてくださいそれから話を聞いて問題用紙の1から4の中から1番いいものを1つ選んでくださいでは練習しましょう例家で女の人が男の人と話しています女の人は男の人に何を出しますか今日は寒いですね温かいものを飲みませんかありがとうございませんコーヒー紅茶あとお茶もありますですけどじゃあ紅茶をお願いします砂糖やミルクは入れますかはい</conversation>
+        <question>女の人は男の人に何を出しますか</question>
+        <propositions>
+            <proposition id="1">A woman offering a cup of tea to a man in a cozy home setting, both in casual attire, anime style</proposition>
+            <proposition id="2">A woman offering a cup of coffee to a man in a modern kitchen, both in casual attire, anime style</proposition>
+            <proposition id="3">A woman offering a cup of tea with sugar to a man in a living room, both in casual attire, anime style</proposition>
+            <proposition id="4">A woman offering a cup of tea with milk to a man in a dining room, both in casual attire, anime style</proposition>
+        </propositions>
+    </item>
+    <item>
+        <introduction>デパートで男の人と店の人が話しています</introduction>
+        <conversation>1番デパートで男の人と店の人が話しています男の人はどこへ行きますかあのすみませんお手洗いはどこですかお手洗いはあちらの階段の横にございますカ売り場の向こうですねええわかりましたどうも</conversation>
+        <question>男の人はどこへ行きますか</question>
+        <propositions>
+            <proposition id="1">A man asking for the restroom location in a busy department store, with a store clerk pointing towards the stairs, anime style</proposition>
+            <proposition id="2">A man looking for the restroom in a department store, with a store clerk showing the way to the restroom, anime style</proposition>
+            <proposition id="3">A man inquiring about the restroom location in a department store, with a store clerk directing him towards the restroom, anime style</proposition>
+            <proposition id="4">A man asking for the restroom in a department store, with a store clerk guiding him to the restroom, anime style</proposition>
+        </propositions>
+    </item>
+    <item>
+        <introduction>教室で先生が話しています</introduction>
+        <conversation>2番教室で先生が話しています学生は初めにどのページを開けますか今から日本語のテストをします全部で4ページあります1ページは聞く問題です2ページから4ページは各問題で4ページには漢字の問題もあります始めに聞く問題をします時間は10分ですでは問題を開けてください学生は初めにどのページを開けますか</conversation>
+        <question>学生は初めにどのページを開けますか</question>
+        <propositions>
+            <proposition id="1">A teacher explaining the structure of a Japanese test to students in a classroom, with pages numbered 1 to 4, anime style</proposition>
+            <proposition id="2">A teacher instructing students to open their test papers, showing pages for listening, multiple choice, and kanji, anime style</proposition>
+            <proposition id="3">A teacher guiding students to start their Japanese test, pointing to the pages for different types of questions, anime style</proposition>
+            <proposition id="4">A teacher explaining the different sections of a Japanese test to students, with pages for listening, multiple choice, and kanji, anime style</proposition>
+        </propositions>
+    </item>
+    <item>
+        <introduction>学校で女の学生と男の学生が話しています</introduction>
+        <conversation>3番学校で女の学生と男の学生が話しています女の学生はどの先生のところへ行きますか山田さんこの紙は書いた後どの先生に出しますか田中先生ですよ田中先生男の先生ですか女の先生ですか男の先生です眼鏡をかけていて背が高い先生ですそうですかじゃあ後で田中先生のところに持っていきます女の学生はどの先生のところへ行きますか</conversation>
+        <question>女の学生はどの先生のところへ行きますか</question>
+        <propositions>
+            <proposition id="1">A female student showing a paper to a male student, indicating they will give it to Tanaka-sensei, in a school hallway, anime style</proposition>
+            <proposition id="2">A female student explaining to a male student that she will submit a paper to Tanaka-sensei, in a school classroom, anime style</proposition>
+            <proposition id="3">A female student confirming with a male student that she will give a paper to Tanaka-sensei, a tall male teacher with glasses, in a school corridor, anime style</proposition>
+            <proposition id="4">A female student discussing with a male student about submitting a paper to Tanaka-sensei, in a school classroom, anime style</proposition>
+        </propositions>
+    </item>
+    <item>
+        <introduction>店で女の人と男の人が話しています</introduction>
+        <conversation>4番店で女の人と男の人が話しています男の人はどの繁華値を買いますか山田さんの娘さんの誕生日プレゼントハカにしませんかああいいですねこのピンクの花のはどうですか女の子は好きだと思いますよああこっちの果物が色々書いてあるのも可愛いですねどっちもいいですねあこれはどうですか山田さんの家犬が2匹いますよねええちょうどこれと同じですよ黒いのと白いのですいいですねこれにしましょうじゃ買ってきますね</conversation>
+        <question>男の人はどの繁華値を買いますか</question>
+        <propositions>
+            <proposition id="1">A man buying a birthday present for a girl, choosing between a pink flower and a fruit basket, in a store, anime style</proposition>
+            <proposition id="2">A man selecting a birthday gift for a girl, deciding between a pink flower and a fruit basket, in a store, anime style</proposition>
+            <proposition id="3">A man choosing a birthday present for a girl, deciding between a pink flower and a fruit basket, in a store, anime style</proposition>
+            <proposition id="4">A man buying a birthday present for a girl, choosing between a pink flower and a fruit basket, in a store, anime style</proposition>
+        </propositions>
+    </item>
+    <item>
+        <introduction>学校で先生と学生が話しています</introduction>
+        <conversation>5番学校で先生と学生が話しています学生は椅子をどう並べますか明日この教室でスピーチコンテストをしますから椅子を並べてくださいはいどう並べますか横に6つ縦に8つ並べてください横に6つ縦に8つですねわかりました</conversation>
+        <question>学生は椅子をどう並べますか</question>
+        <propositions>
+            <proposition id="1">A student arranging chairs for a speech contest, placing 6 chairs in a row and 8 chairs in a column, in a school classroom, anime style</proposition>
+            <proposition id="2">A student setting up chairs for a speech contest, arranging 6 chairs in a row and 8 chairs in a column, in a school classroom, anime style</proposition>
+            <proposition id="3">A student organizing chairs for a speech contest, placing 6 chairs in a row and 8 chairs in a column, in a school classroom, anime style</proposition>
+            <proposition id="4">A student arranging chairs for a speech contest, placing 6 chairs in a row and 8 chairs in a column, in a school classroom, anime style</proposition>
+        </propositions>
+    </item>
+    <item>
+        <introduction>病院で病院の人と女の人が話しています</introduction>
+        <conversation>6番病院で病院の人と女の人が話しています女の人はどこに座りますか山田さんはいじゃあ名前を呼びますからそれまであそこの椅子でちょっと待っていてくださいあの窓のそばのソファーですかええそうです女の人はどこに座りますか</conversation>
+        <question>女の人はどこに座りますか</question>
+        <propositions>
+            <proposition id="1">A woman waiting to be called in a hospital, sitting on a sofa near a window, in a waiting room, anime style</proposition>
+            <proposition id="2">A woman waiting to be called in a hospital, sitting on a sofa near a window, in a waiting room, anime style</proposition>
+            <proposition id="3">A woman waiting to be called in a hospital, sitting on a sofa near a window, in a waiting room, anime style</proposition>
+            <proposition id="4">A woman waiting to be called in a hospital, sitting on a sofa near a window, in a waiting room, anime style</proposition>
+        </propositions>
+    </item>
+    <item>
+        <introduction>学校で男の学生と学校の人が話しています</introduction>
+        <conversation>7番学校で男の学生と学校の人が話しています男の学生は何時頃にもう1度来ますかすみません先生はいますかいえまだ来ていませんがそうですか何時頃に来ますかもうすぐ来ますよ10時から授業がありますからそうですかあの次の11時からの授業もありますかいえ午前中はその授業だけですからまたここに戻ますよわかりましたじゃ授業が終わる頃また来ます男の学生は何時頃にもう1度来ますか</conversation>
+        <question>男の学生は何時頃にもう1度来ますか</question>
+        <propositions>
+            <proposition id="1">A student asking about the next meeting time with a teacher, who will arrive soon for morning classes, in a school hallway, anime style</proposition>
+            <proposition id="2">A student inquiring about the next meeting time with a teacher, who will arrive soon for morning classes, in a school hallway, anime style</proposition>
+            <proposition id="3">A student asking about the next meeting time with a teacher, who will arrive soon for morning classes, in a school hallway, anime style</proposition>
+            <proposition id="4">A student asking about the next meeting time with a teacher, who will arrive soon for morning classes, in a school hallway, anime style</proposition>
+        </propositions>
+    </item>
+</items>
+```

@@ -1,8 +1,0 @@
-aws bedrock:
-  text structurer:
-    model_id: amazon.nova-micro-v1:0
-    max_tokens: 2048
-    temperature: 0.3
-    top_p: 0.9
-
-

@@ -1,0 +1,13 @@
+aws_bedrock:
+  text_structurer:
+    model_id: amazon.nova-micro-v1:0
+    max_tokens: 5000
+    temperature: 0
+    top_p: 0.9
+
+openai:
+  text_structurer:
+    gpt4o:
+      model_id: gpt-4o-mini
+      max_tokens: 5000
+      temperature: 0
