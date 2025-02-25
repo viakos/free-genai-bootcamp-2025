@@ -5,12 +5,21 @@ import os
 from ..services.chat import BedrockChat
 from ..services.youtube import YouTubeTranscriptDownloader
 from ..services.text_extractor import TextPatternExtractor
+from ..services.vector_store import QuestionVectorStore
 from ..utils.file_handlers import process_and_save_questions, save_transcript
 
 router = APIRouter()
 
+# Initialize services
 def get_bedrock_chat():
     return BedrockChat()
+
+# Initialize vector store
+vector_store = QuestionVectorStore(persist_directory=os.path.join(
+    os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
+    "data",
+    "chroma_db"
+))
 
 @router.post("/invoke-llm")
 async def invoke_llm(request: Request, chat: BedrockChat = Depends(get_bedrock_chat)) -> Dict[str, Any]:
@@ -59,6 +68,9 @@ async def get_transcript(video_url: str = Query(..., description="YouTube video 
         questions_file = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "data", "questions", f"{video_id}.txt")
         processed_text = process_and_save_questions(processed_text, questions_file)
         
+        # Add to vector store
+        vector_store.add_questions(processed_text, video_id)
+        
         return {
             "video_id": video_id,
             "transcript": transcript,
@@ -67,5 +79,57 @@ async def get_transcript(video_url: str = Query(..., description="YouTube video 
         
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/api/similar-questions")
+async def get_similar_questions(
+    query: str = Query(..., description="Question or text to find similar questions for"),
+    n_results: int = Query(5, description="Number of similar questions to return")
+) -> Dict[str, Any]:
+    """API endpoint to find similar questions in the vector store"""
+    try:
+        similar_questions = vector_store.find_similar_questions(query, n_results)
+        return {"questions": similar_questions}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/api/all-questions")
+async def get_all_questions() -> Dict[str, Any]:
+    """API endpoint to get all questions from the vector store"""
+    try:
+        all_questions = vector_store.get_all_questions()
+        return {"questions": all_questions}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/api/clear-questions")
+async def clear_questions() -> Dict[str, Any]:
+    """API endpoint to clear all questions from the vector store"""
+    try:
+        success = vector_store.clear_questions()
+        if success:
+            return {"status": "success", "message": "All questions cleared"}
+        else:
+            raise HTTPException(status_code=500, detail="Failed to clear questions")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/api/add-questions")
+async def add_questions(request: Request) -> Dict[str, Any]:
+    """API endpoint to add questions to the vector store"""
+    try:
+        data = await request.json()
+        questions = data.get("questions", [])
+        if not questions:
+            raise HTTPException(status_code=400, detail="No questions provided")
+        
+        for question in questions:
+            vector_store.add_question(
+                question["text"],
+                question["answer"],
+                question.get("topic", "general")
+            )
+        return {"status": "success", "message": f"Added {len(questions)} questions"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
