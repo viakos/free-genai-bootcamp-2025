@@ -186,11 +186,14 @@ def process_message(message: str):
         # Check if the response is successful
         if response.status_code == 200:
             response_data = response.json()  # Parse the JSON response
-            response_text = response_data.get("response")  # Extract the response text
+            # Extract the response text from Bedrock's response structure
+            response_text = response_data.get("output", {}).get("message", {}).get("content", [{}])[0].get("text", "")
             
             if response_text:
                 st.markdown(response_text)  # Display the response
                 st.session_state.messages.append({"role": "assistant", "content": response_text})
+            else:
+                st.error("Error: Could not extract response text from the model")
         else:
             st.error(f"Error: {response.status_code} - {response.text}")
 
