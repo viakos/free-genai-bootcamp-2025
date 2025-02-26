@@ -46,9 +46,11 @@ async def get_transcript(video_url: str = Query(..., description="YouTube video 
         
         # Extract video ID
         video_id = downloader.extract_video_id(video_url)
+        print(f"Processing video: {video_id}")
         
         # Get transcript
         transcript = downloader.get_transcript(video_id)
+        print(f"Got transcript with {len(transcript)} entries")
         
         # Save transcript
         save_success = save_transcript(transcript, video_id)
@@ -57,19 +59,25 @@ async def get_transcript(video_url: str = Query(..., description="YouTube video 
             
         # Process text with LLM
         combined_text = ' '.join(entry['text'] for entry in transcript)
+        print(f"Combined transcript length: {len(combined_text)} chars")
         
         # Initialize text extractor
         extractor = TextPatternExtractor()
         
         # Process with Nova LLM
         processed_text = extractor.invoke_llm(combined_text, "nova-micro")
+        print(f"Processed text from LLM: {processed_text[:200]}...")  # Print first 200 chars
         
         # Save processed questions
         questions_file = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "data", "questions", f"{video_id}.txt")
         processed_text = process_and_save_questions(processed_text, questions_file)
         
         # Add to vector store
-        vector_store.add_questions(processed_text, video_id)
+        success = vector_store.add_questions(processed_text, video_id)
+        if not success:
+            print("Failed to add questions to vector store")
+        else:
+            print("Successfully added questions to vector store")
         
         return {
             "video_id": video_id,
@@ -103,15 +111,12 @@ async def get_all_questions() -> Dict[str, Any]:
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/api/clear-questions")
+@router.delete("/api/clear-questions")
 async def clear_questions() -> Dict[str, Any]:
     """API endpoint to clear all questions from the vector store"""
     try:
-        success = vector_store.clear_questions()
-        if success:
-            return {"status": "success", "message": "All questions cleared"}
-        else:
-            raise HTTPException(status_code=500, detail="Failed to clear questions")
+        vector_store.clear_questions()
+        return {"success": True}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

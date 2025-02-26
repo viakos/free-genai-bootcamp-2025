@@ -1,87 +1,89 @@
-<question>
-  <Introduction>: 日本語能力試験完全模試N 5第2回 朝会これからN5の懲戒試験を始めますメモを取ってもいいです 問題用紙を開けてください
-  <Conversation>: 例家で女の人が男の人と話してい ます女の人は男の人に何を出しますか 今日は寒いです ね温かいものを飲みませんかありがとう ござい ますコーヒー紅茶あとお茶もありますけど じゃあ紅茶をお願いします砂糖やミルクは 入れますかあ はいのは男の人に何を出します か
-  <Question>: 女の人は男の人に何を出しますか
-</question>
-
-<question>
-  <Introduction>: 1番デパートで男の人と店の人が話し てい ます男の人はどこへ行きます か
-  <Conversation>: あの すみませんお手洗いはどこですかお手洗い はあちらの階段の横にございますカ売り場 の向こうですね ええわかりましたどう も
-  <Question>: 男の人はどこへ行きますか
-</question>
-
-<question>
-  <Introduction>: 2番教室で先生が話してい ます学生は初めにどのページを開けます か
-  <Conversation>: 今から日本語のテストをします は全部で4ページあり ます1ページは聞く問題 です2ページから4ページは各問題 で4ページには漢字の問題もあり ます始めに聞く問題をし ます時間は10分 ですでは問題を開けて ください学生は初めにどのページを開け ます か
-  <Question>: 学生は初めにどのページを開けますか
-</question>
-
-<question>
-  <Introduction>: 3番学校で女の学生と男の学生が話してい ます女の学生はどの先生のところへ行き ます か
-  <Conversation>: 山田さんこの紙は書いた後どの先生に 出します か田中先生ですよ田中 先生男の先生ですか女の先生ですか男の 先生です眼鏡をかけていて背が高い先生 ですそうですかじゃあ後で田中先生の ところに持っていき ます女の学生はどの先生のところへ行き ますか
-  <Question>: 女の学生はどの先生のところへ行きますか
-</question>
-
-<question>
-  <Introduction>: 4番店で女の人と男の人が話してい ます男の人はどの繁華値を買いますか
-  <Conversation>: 山田さんの娘さんの誕生日プレゼントハカ にしませんかああいいですねこのピンクの 花のはどうですか女の子は好きだと思い ますよああこっちの果物が色々書いてある のも可愛いですねどっちもいいですね あこれはどうですか山田さんの家犬が2匹 いますよね ええちょうどこれと同じですよ黒いのと 白いの ですいいですねこれにしましょうじゃ買っ てきます ね
-  <Question>: 男の人はどの繁華値を買いますか
-</question>
-
-<question>
-  <Introduction>: 5 番学校で先生と学生が話してい ます学生は椅子をどう並べます か
-  <Conversation>: 明日この教室でスピーチコンテストをし ますから椅子を並べてくださいはいどう 並べます か横に6つ縦に8つ並べて ください横に6つ縦に8つですねわかり まし た学生は椅子をどう並べますか
-  <Question>: 学生は椅子をどう並べますか
-</question>
-
-<question>
-  <Introduction>: 6番病院 で病院の人と女の人が話してい ます女の人はどこに座りますか
-  <Conversation>: 山田さんはいじゃあ名前を呼びますから それまであそこの椅子でちょっと待ってい てくださいあの窓のそばのソファーですか ええそう です
-  <Question>: 女の人はどこに座りますか
-</question>
-
-<question>
-  <Introduction>: 7番学校で男の学生と学校の人が話してい ます男の学生は何時頃にもう1度来ます か
-  <Conversation>: すみません 先生はいますかいえまだ来ていませんが そうです か何時頃に来ますかもうすぐ来ますよ10 時から授業がありますからそうですか あの次の11時からの授業もありますか いえ午前中はその授業だけですからまた ここに戻ますよわかりましたじゃ授業が 終わる頃また来 ます男の学生は何時頃にもう1度来ますか
-  <Question>: 男の学生は何時頃にもう1度来ますか
-</question>
-
-<question>
-  <Introduction>: 問題2では初めに質問を聞いて くださいそれから話を聞い て問題用紙の1から4の中から1番いい ものを1つ選んで くださいでは練習し ましょう 例女の学生と男の学生が話してい ます2人はいつプレゼントを買いに行き ます か
-  <Conversation>: 来週ささんの誕生日プレゼントを買いに 行きませんかそうです ね5日が誕生日ですから3日か4日に行き ましょうあちょっと待ってください私は3 日と4日はアルバイトがあります2日は ダメですかいいですよじゃあ授業が終わっ た後に行きましょう 2人はいつプレゼントを買いに行きますか
-  <Question>: 2人はいつプレゼントを買いに行きますか
-</question>
-
-<question>
-  <Introduction>: 1番男の人と女の人が話してい ます女の人の誕生日はいつです か
-  <Conversation>: 綺麗花ですねええ誕生日に友達にもらい ました へえいつですか昨日です11日ですそう ですか えじゃあ1が4つ並びますねええそうです よ女の人の誕生日はいつです か
-  <Question>: 女の人の誕生日はいつですか
-</question>
-
-<question>
-  <Introduction>: 2番大学で男の学生と女の学生が話してい ます2人はどこで食べますか
-  <Conversation>: 山田さんお昼一緒に食べませんかいいです よじゃあ学生食堂が新しくなったから行き ませんかそうです ねでも今日は天気がいいから外で食べたい です朝からずっと教室の中にいましたから じゃあお店でパンかお弁当を買って 桜公園まで行きましょうかええそうし ましょう2人はどこで食べますか
-  <Question>: 2人はどこで食べますか
-</question>
-
-<question>
-  <Introduction>: 3番 レストランで女の人と店の人が話してい ます女の人は何を食べますか
-  <Conversation>: すみませんこれは鶏肉ですかいえこちら は豚肉でございますそうですかこれは こちらは魚ですそうですかあの鶏肉の料理 はありませんか はいこちら ですじゃこれをお願いし ます女の人は何を食べますか
-  <Question>: 女の人は何を食べますか
-</question>
-
-<question>
-  <Introduction>: 4番大学で男の学生と女の学生が話してい ます明日のパーティーに先生は何人来ます か
-  <Conversation>: 明日のクラスのパーティーには全部で何 人くらい来ますか えっと来ない人が3人いますから全部で 24人ですそうですか先生たちも来ますか ええ山田先生と田中先生が来ます川島先生 は川島先生は来ないと言っていましたそう です か明日のパーティーに先生は何人来ます か
-  <Question>: 明日のパーティーに先生は何人来ますか
-</question>
-
-<question>
-  <Introduction>: 5 番男の人と女の人が話してい ます明日の午後女の人はどこへ行き ますか
-  <Conversation>: 明日の午後一緒に映画を見に行きません かすみません明日はちょっと忙しいですか ええ午前は病院へ行ったり荷物を出しに 郵便局へ行ったりします午後は山田先生の 授業のレポートを書きます月曜日に出し ますか えそのレポート出すのは金曜日までですよ 本当ですかじゃあ私も映画を見に行きたい ですじゃ行き ましょう明日の午後女の人はどこへ行き ますか
-  <Question>: 明日の午後女の人はどこへ行きますか
-</question>
-
-<question>
-  <Introduction>: 6番パーティーで男の人と女の人が話してい ます女の人は何を飲みます か
-  <Conversation>: あ山田さん飲み物がありませんね 何を飲みますかビールとワインあと ジュースとお茶がありますけどあの コーヒーはありませんか うーんコーヒーはありませんねそうですか 温
+```xml
+<items>
+    <item>
+        <introduction>デパートで男の人と店の人が話しています。</introduction>
+        <conversation>男の人は店の人にトイレの場所を尋ねています。</conversation>
+        <question>男の人はどこへ行きますか。</question>
+    </item>
+    <item>
+        <introduction>教室で先生が学生にテストのページを尋ねています。</introduction>
+        <conversation>学生はテストのページについて尋ねています。</conversation>
+        <question>学生は初めにどのページを開けますか。</question>
+    </item>
+    <item>
+        <introduction>学校で女の学生と男の学生が話しています。</introduction>
+        <conversation>女の学生は田中先生に提出する書類について尋ねています。</conversation>
+        <question>女の学生はどの先生のところへ行きますか。</question>
+    </item>
+    <item>
+        <introduction>店で女の人と男の人が話しています。</introduction>
+        <conversation>男の人はプレゼントを買いたいと言っています。</conversation>
+        <question>男の人はどの繁華値を買いますか。</question>
+    </item>
+    <item>
+        <introduction>学校で先生と学生が話しています。</introduction>
+        <conversation>学生はスピーチコンテストの椅子の配置について尋ねています。</conversation>
+        <question>学生は椅子をどう並べますか。</question>
+    </item>
+    <item>
+        <introduction>学校で男の学生と学校の人が話しています。</introduction>
+        <conversation>男の学生は次の授業の時間について尋ねています。</conversation>
+        <question>男の学生は何時頃にもう1度来ますか。</question>
+    </item>
+    <item>
+        <introduction>男の人と女の人が話しています。</introduction>
+        <conversation>女の人は誕生日について尋ねています。</conversation>
+        <question>女の人の誕生日はいつですか。</question>
+    </item>
+    <item>
+        <introduction>大学で男の学生と女の学生が話しています。</introduction>
+        <conversation>2人は昼食の場所について話しています。</conversation>
+        <question>2人はどこで食べますか。</question>
+    </item>
+    <item>
+        <introduction>レストランで女の人と店の人が話しています。</introduction>
+        <conversation>女の人は食事の選択について尋ねています。</conversation>
+        <question>女の人は何を食べますか。</question>
+    </item>
+    <item>
+        <introduction>大学で男の学生と女の学生が話しています。</introduction>
+        <conversation>2人は明日のパーティーに来る先生について話しています。</conversation>
+        <question>明日のパーティーに先生は何人来ますか。</question>
+    </item>
+    <item>
+        <introduction>男の人と女の人が話しています。</introduction>
+        <conversation>女の人は明日の午後の予定について尋ねています。</conversation>
+        <question>明日の午後女の人はどこへ行きますか。</question>
+    </item>
+    <item>
+        <introduction>パーティーで男の人と女の人が話しています。</introduction>
+        <conversation>女の人は飲み物について尋ねています。</conversation>
+        <question>女の人は何を飲みますか。</question>
+    </item>
+    <item>
+        <introduction>寝ます他の人に何と言いますか。</introduction>
+        <conversation>例として寝ます他の人に何と言いますか。</conversation>
+        <question>寝ます他の人に何と言いますか。</question>
+    </item>
+    <item>
+        <introduction>学校へ出かけます家族に何と言いますか。</introduction>
+        <conversation>例として学校へ出かけます家族に何と言いますか。</conversation>
+        <question>学校へ出かけます家族に何と言いますか。</question>
+    </item>
+    <item>
+        <introduction>電車に乗ります東京まで何分で行くか聞きたいです。</introduction>
+        <conversation>例として電車に乗ります東京まで何分で行くか聞きたいです。</conversation>
+        <question>電車に乗ります東京まで何分で行くか聞きたいです。</question>
+    </item>
+    <item>
+        <introduction>タクシーの中ですどこへ行きたいか言います。</introduction>
+        <conversation>例としてタクシーの中ですどこへ行きたいか言います。</conversation>
+        <question>タクシーの中ですどこへ行きたいか言います。</question>
+    </item>
+    <item>
+        <introduction>喫茶店にいますコーヒーを飲みたいです。</introduction>
+        <conversation>例として喫茶店にいますコーヒーを飲みたいです。</conversation>
+        <question>喫茶店にいますコーヒーを飲みたいです。</question>
+    </item>
+</items>
+```

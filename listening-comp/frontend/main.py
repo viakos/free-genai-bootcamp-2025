@@ -261,6 +261,28 @@ def is_json_or_string(value):
     # Otherwise, it's neither
     return "UNKNOWN"
 
+def get_similar_questions(query: str, n_results: int = 5) -> Dict:
+    """
+    Call the backend /api/similar-questions endpoint to find similar questions.
+    
+    Args:
+        query (str): The question to find similar matches for
+        n_results (int): Number of similar questions to return
+        
+    Returns:
+        dict: Similar questions response or error message
+    """
+    try:
+        response = requests.get(
+            "http://127.0.0.1:8000/api/similar-questions",
+            params={"query": query, "n_results": n_results}
+        )
+        response.raise_for_status()
+        return response.json()
+    except Exception as e:
+        st.error(f"Error finding similar questions: {str(e)}")
+        return {"questions": []}
+
 # def save_transcript(transcript: Dict, video_id: str) -> bool:
 #     """
 #     Save transcript to file
@@ -394,13 +416,21 @@ def render_rag_stage():
     
     with col1:
         st.subheader("Retrieved Context")
-        # Placeholder for retrieved contexts
-        st.info("Retrieved contexts will appear here")
-        
+        if query:
+            # Get similar questions when query is entered
+            similar = get_similar_questions(query)
+            if similar.get("questions"):
+                for idx, question in enumerate(similar["questions"], 1):
+                    st.markdown(f"**Similar Question {idx}:**")
+                    st.text(question)
+            else:
+                st.info("No similar questions found in the database.")
+        else:
+            st.info("Enter a query to see similar questions from the database.")
+    
     with col2:
         st.subheader("Generated Response")
-        # Placeholder for LLM response
-        st.info("Generated response will appear here")
+        st.info("Response generation will be implemented here")
 
 def render_interactive_stage():
     """Render the interactive learning stage"""

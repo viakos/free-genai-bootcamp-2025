@@ -25,6 +25,7 @@ class TextPatternExtractor:
         Use Amazon Bedrock to extract Introduction, Conversation, and Question patterns.
         """
         prompt = f"""
+       
         ## **Role:**  
         You are a text processing AI specialized in transforming Japanese listening comprehension scripts into structured XML `<question>` elements.
 
@@ -35,8 +36,8 @@ class TextPatternExtractor:
         - **Conversation:** Use the exact conversation text from the input.  
         - **Question:** Extract the main question posed after the conversation.  
         3. **Formatting Rules:**  
-        - Wrap each question in `<question>` tags without any parent elements.  
-        - Use exact formatting with capitalized section names followed by a colon. Example: `Introduction:`, `Conversation:`, `Question:`  
+        - Wrap each question in `<item>` tags with a global <items> tag.  
+        - Use XML formatting. Example: `<introduction>`, `<conversation>`, `<question>`  
         - All text must be taken directly from the source without modifications or additions.
         
         4. **Spatial Placement Restriction:**  
@@ -44,6 +45,33 @@ class TextPatternExtractor:
         - Exclude questions referring to directions like north, south, east, or west.  
         - Exclude questions that involve interpreting maps, diagrams, or pointing to specific locations.  
         - Only include questions that differ by actions, visual details, or contextual elements (not relative positioning).  
+
+        ## **Example:**
+        <item>
+        <ntroduction>my introduction</instroduction>
+
+        <conversation>my conversation</conversation>
+
+        <question>my question</question>
+        </item>
+        
+
+        ## **Process:**  
+        0. **Remove any text that talk about a test or proficiency or mention N5**
+        1. **Identify Each Question:** Break the source text into individual questions using contextual breaks.  
+        2. **Extract Elements:** Extract the introduction, conversation, and question for each element.  
+        3. **Apply Spatial Restriction:** Exclude any questions with spatial references as per the rules.  
+        4. **Format Output:** Use proper XML formatting with clear line breaks and consistent indentation.  
+        
+
+        
+        ## **Verification:**  
+        - Verify that each `<item>` element is correctly structured with the three required sections.  
+        - Confirm that the text is taken directly from the source without modifications or additions.  
+        - Ensure no spatial references are present in the selected questions.  
+        - Validate that the formatting is consistent and free of syntax errors.
+        - ** If one of the <question> elements is an example question then remove the whole <question> element.**
+
 
         Text:
         {text}

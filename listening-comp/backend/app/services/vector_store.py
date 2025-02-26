@@ -55,65 +55,110 @@ class QuestionVectorStore:
         )
 
     def parse_question_xml(self, xml_text: str) -> List[Dict[str, str]]:
-        """Parse XML formatted questions into structured data"""
+        """Parse XML-like formatted questions into structured data"""
         questions = []
+        print(f"Parsing XML text: {xml_text[:200]}...")
+        
         try:
-            # Split multiple questions if present
-            xml_texts = xml_text.split('</question>')
-            for text in xml_texts:
-                if not text.strip():
+            # Remove Markdown code block markers if present
+            clean_xml = xml_text.strip()
+            if clean_xml.startswith("```"):
+                clean_xml = "\n".join(clean_xml.split("\n")[1:-1])
+            
+            # Split into items
+            items = clean_xml.split('</item>')
+            print(f"Found {len(items)} potential items")
+            
+            def extract_tag_content(text: str, tag: str) -> str:
+                try:
+                    start_tag = f"<{tag}>"
+                    end_tag = f"</{tag}>"
+                    start = text.index(start_tag) + len(start_tag)
+                    end = text.index(end_tag, start)
+                    return text[start:end].strip()
+                except (ValueError, IndexError):
+                    return ""
+            
+            for item in items:
+                if not item.strip() or '<item>' not in item:
                     continue
                     
-                # Add closing tag if missing
-                if '</question>' not in text:
-                    text += '</question>'
-                
-                # Ensure the text starts with <question>
-                if not text.strip().startswith('<question>'):
-                    text = '<question>' + text
-                
-                root = ET.fromstring(text)
-                
-                # Extract components
-                introduction = root.find('Introduction').text.strip() if root.find('Introduction') is not None else ""
-                conversation = root.find('Conversation').text.strip() if root.find('Conversation') is not None else ""
-                question = root.find('Question').text.strip() if root.find('Question') is not None else ""
-                
-                questions.append({
-                    "introduction": introduction,
-                    "conversation": conversation,
-                    "question": question,
-                    "full_text": f"{introduction}\n{conversation}\n{question}"
-                })
-                
-        except ET.ParseError as e:
+                try:
+                    # Extract content for each tag
+                    introduction = extract_tag_content(item, "introduction")
+                    conversation = extract_tag_content(item, "conversation")
+                    question = extract_tag_content(item, "question")
+                    
+                    # Validate all fields are present
+                    if introduction and conversation and question:
+                        questions.append({
+                            "introduction": introduction,
+                            "conversation": conversation,
+                            "question": question,
+                            "full_text": f"{introduction}\n{conversation}\n{question}"
+                        })
+                        print(f"Successfully parsed question with intro: {introduction[:50]}...")
+                    else:
+                        print(f"Skipping item: missing required content")
+                        
+                except Exception as e:
+                    print(f"Error parsing item: {e}")
+                    continue
+            
+        except Exception as e:
             print(f"Error parsing XML: {e}")
         
+        print(f"Total questions parsed: {len(questions)}")
         return questions
 
-    def add_questions(self, xml_text: str, video_id: str):
+    def add_questions(self, xml_text: str, video_id: str) -> bool:
         """Add questions from XML text to the vector store"""
-        questions = self.parse_question_xml(xml_text)
-        
-        if not questions:
-            return
-        
-        # Prepare data for ChromaDB
-        documents = [q["full_text"] for q in questions]
-        metadatas = [{
-            "video_id": video_id,
-            "introduction": q["introduction"],
-            "conversation": q["conversation"],
-            "question": q["question"]
-        } for q in questions]
-        ids = [f"{video_id}_{i}" for i in range(len(questions))]
-        
-        # Add to collection
-        self.collection.add(
-            documents=documents,
-            metadatas=metadatas,
-            ids=ids
-        )
+        try:
+            questions = self.parse_question_xml(xml_text)
+            
+            if not questions:
+                print("No questions parsed because parse_question_xml returned None")
+                return False
+            print(f"Successfully parsed {len(questions)} questions")
+            
+            try:
+                # Prepare data for ChromaDB
+                documents = [q["full_text"] for q in questions]
+                print(f"Prepared {len(documents)} documents")
+                
+                metadatas = [{
+                    "video_id": video_id,
+                    "introduction": q["introduction"],
+                    "conversation": q["conversation"],
+                    "question": q["question"]
+                } for q in questions]
+                print(f"Prepared {len(metadatas)} metadata entries")
+                
+                ids = [f"{video_id}_{i}" for i in range(len(questions))]
+                print(f"Generated {len(ids)} IDs")
+                
+                # Add to collection
+                try:
+                    self.collection.add(
+                        documents=documents,
+                        metadatas=metadatas,
+                        ids=ids
+                    )
+                    print(f"Successfully added {len(documents)} questions to vector store")
+                    return True
+                except Exception as e:
+                    print(f"Failed to add to collection: {str(e)}")
+                    print(f"First document sample: {documents[0][:100]}...")
+                    print(f"First metadata sample: {metadatas[0]}")
+                    return False
+                    
+            except Exception as e:
+                print(f"Failed to prepare data for vector store: {str(e)}")
+                return False
+                
+        except Exception as e:
+            print(f"Failed to parse questions: {str(e)}")
+            return False
 
     def add_question(self, text: str, answer: str, topic: str = "general"):
         """Add a single question to the vector store"""
