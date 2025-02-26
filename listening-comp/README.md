@@ -87,7 +87,7 @@ openai:
 
 - **Clear Question Database**:
   ```bash
-  curl -X POST http://127.0.0.1:8000/api/clear-questions
+ curl -X DELETE http://localhost:8000/api/clear-questions
   ```
 
 #### Video Processing
