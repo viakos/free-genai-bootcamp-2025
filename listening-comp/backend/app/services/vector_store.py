@@ -185,8 +185,7 @@ class QuestionVectorStore:
         for i in range(len(results['ids'][0])):
             similar_questions.append({
                 "id": results['ids'][0][i],
-                "text": results['documents'][0][i],
-                "metadata": results['metadatas'][0][i],
+                "question": results['metadatas'][0][i].get("question", ""),
                 "distance": results['distances'][0][i] if 'distances' in results else None
             })
             

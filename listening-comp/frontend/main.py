@@ -422,8 +422,11 @@ def render_rag_stage():
             if similar.get("questions"):
                 for idx, question in enumerate(similar["questions"], 1):
                     st.markdown(f"**Similar Question {idx}:**")
-                    st.text(question)
-            else:
+                    st.markdown(f"""
+Question: {f"{question.get('question', '')}\n"}
+Distance: {question.get('distance', 'N/A'):.4f}
+""")
+            else:   
                 st.info("No similar questions found in the database.")
         else:
             st.info("Enter a query to see similar questions from the database.")
