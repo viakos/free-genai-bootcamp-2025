@@ -26,6 +26,8 @@ if 'transcript' not in st.session_state:
     st.session_state.transcript = None
 if 'messages' not in st.session_state:
     st.session_state.messages = []
+if 'processed_questions' not in st.session_state:
+    st.session_state.processed_questions = None
 
 def extract_video_id(url: str) -> Optional[str]:
         """
@@ -311,17 +313,15 @@ def render_transcript_stage():
             try:
                 transcript = get_transcript(url)
                 video_id = extract_video_id(url)
-                # save_transcript(transcript, video_id)
-                print("0")
                 if transcript:
                     entries = transcript.get("transcript", [])
-        # Extract only the "text" values from each entry
+                    # Extract only the "text" values from each entry
                     text_values = [entry.get("text", "") for entry in entries if isinstance(entry, dict)]
                     transcript_text = "\n".join(text_values)
-                    # Store the raw transcript text in session state
-                    # transcript_text = "\n".join([entry['text'] for entry in transcript])
+                    # Store the raw transcript text and processed questions in session state
                     st.session_state.transcript = transcript_text
-                    st.success("Transcript downloaded successfully!")
+                    st.session_state.processed_questions = transcript.get("processed_text")
+                    st.success("Transcript downloaded and processed successfully!")
                 else:
                     st.error("No transcript found for this video.")
             except Exception as e:
@@ -369,8 +369,16 @@ def render_structured_stage():
         
     with col2:
         st.subheader("Data Structure")
-        # Placeholder for structured data view
-        st.info("Structured data view will be implemented here")
+        if st.session_state.processed_questions:
+            #  st.json(st.session_state.processed_questions)
+            st.text_area(
+                label="Structured Data",
+                value=st.session_state.processed_questions,
+                height=400,
+                disabled=True
+            )
+        else:
+            st.info("No structured data available yet. Download a transcript first.")
 
 def render_rag_stage():
     """Render the RAG implementation stage"""
