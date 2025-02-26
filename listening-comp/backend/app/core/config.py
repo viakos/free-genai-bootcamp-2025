@@ -1,22 +1,15 @@
 from dotenv import load_dotenv
 import os
+import yaml
 
 load_dotenv()
 
-settings = {
-    "aws_bedrock": {
-        "text_structurer": {
-            "model_id": "amazon.nova-micro-v1:0",
-            "max_tokens": 2048,
-            "temperature": 0.7,
-            "top_p": 0.9
-        }
-    },
-    "openai": {
-        "text_structurer": {
-            "gpt4o": {
-                "model_id": "gpt-4"
-            }
-        }
-    }
-}
+def load_settings(file_path: str) -> dict:
+    """
+    Load settings from a YAML file using PyYAML.
+    """
+    with open(file_path, 'r', encoding='utf-8') as file:
+        return yaml.safe_load(file)  # Use safe_load for security
+
+# Load settings from YAML file
+settings = load_settings("backend/settings.yaml")
