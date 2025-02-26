@@ -2,7 +2,6 @@
 
 import boto3
 import os
-from backend.utils import load_settings
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -14,9 +13,3 @@ bedrock_client = boto3.client(
     aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
     region_name="us-east-1"
 )
-
-
-
-settings = load_settings("settings.yaml")
-
-

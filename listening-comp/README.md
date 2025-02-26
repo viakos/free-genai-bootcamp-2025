@@ -32,8 +32,38 @@ cp .env.example .env
 
 3. Start the server:
 ```bash
+cd listening-comp
 uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload
 ```
+
+### Configuration
+
+The application's settings are managed through `backend/settings.yaml`. This file contains configuration for AI models and their parameters:
+
+```yaml
+aws_bedrock:
+  text_structurer:
+    model_id: amazon.nova-micro-v1:0
+    max_tokens: 2048
+    temperature: 0.7
+    top_p: 0.9
+
+openai:
+  text_structurer:
+    gpt4o:
+      model_id: gpt-4o-mini
+```
+
+#### Configuration Options:
+
+- **AWS Bedrock Settings**:
+  - `model_id`: The model identifier for AWS Bedrock
+  - `max_tokens`: Maximum number of tokens in the response
+  - `temperature`: Controls randomness in the response (0.0 to 1.0)
+  - `top_p`: Controls diversity of the response via nucleus sampling
+
+- **OpenAI Settings**:
+  - `model_id`: The model identifier for OpenAI's GPT model
 
 ### API Endpoints
 
@@ -84,7 +114,7 @@ pip install -r requirements.txt
 
 2. Start the frontend:
 ```bash
-python main.py
+streamlit run main.py
 ```
 
 ### Features
@@ -113,7 +143,10 @@ listening-comp/
 
 ### Data Management
 - Vector database is stored in `data/chroma_db/`
-- Database can be cleared using the clear-questions endpoint
+- Database can be cleared using the clear-questions endpoint:
+```bash
+curl -X POST http://127.0.0.1:8000/api/clear-questions
+```
 - Database files are gitignored and should be regenerated locally
 
 ### Testing
