@@ -1,0 +1,42 @@
+/* styles/main.css */
+
+/* Image styling */
+.stImage {
+    max-width: 50%;
+    margin: auto;
+    display: block;
+}
+
+.stImage img {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease-in-out;
+}
+
+.stImage img:hover {
+    transform: scale(1.02);
+}
+
+/* Tab styling */
+.stTab {
+    background-color: #f0f2f6;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* Header styling */
+.stHeader {
+    color: #1f1f1f;
+    margin-bottom: 2rem;
+}
+
+/* Sidebar styling */
+.css-1d391kg {
+    padding: 2rem 1rem;
+}
+
+/* Tab container */
+.stTabs {
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
